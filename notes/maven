@@ -1,0 +1,60 @@
+1) Compile Jar
+    a) Put in pom.xml
+            <build>
+                   <plugins>
+                       <plugin>
+                           <artifactId>maven-assembly-plugin</artifactId>
+                           <configuration>
+                               <archive>
+                                   <manifest>
+                                       <mainClass>fully.qualified.MainClass</mainClass>
+                                   </manifest>
+                               </archive>
+                               <descriptorRefs>
+                                   <descriptorRef>jar-with-dependencies</descriptorRef>
+                               </descriptorRefs>
+                           </configuration>
+                       </plugin>
+                   </plugins>
+             </build>
+
+    b) Import ftp4j:
+         mvn install:install-file -DgroupId=ftp4j -DartifactId=ftp4j -Dversion=1.7.2 -Dpackaging=jar -Dfile=lib/ftp4j/ftp4j/1.7.2/ftp4j-1.7.2.jar
+
+
+    b)  run:
+        mvn install:install-file -Dfile=lib/ftp4j/ftp4j/1.7.2/ftp4j-1.7.2.jar  -DgroupId=ftp4j -DartifactId=ftp4j -Dversion=1.7.2 -Dpackaging=jar
+        mvn clean compile assembly:single
+
+2) To use that in another project:
+
+    a) Download and register with MAVEN:
+        1) Put in:
+           target/MyUtils/MyUtils/{version}/MyUtils-{version}.jar
+
+    b) Run:
+    mvn install:install-file  -DgroupId=MyUtils -DartifactId=MyUtils -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/MyUtils-1.0.2-jar-with-dependencies.jar
+
+    mvn install:install-file  -DgroupId=MyUtils -DartifactId=MyUtils -Dversion={version} -Dpackaging=jar -Dfile=target/MyUtils/MyUtils/{version}/MyUtils-{version}jar
+    #probably not needed. Just see below.
+
+    c) Local Repository dir is: C:\Users\User\.m2\repository
+
+    c) Put below in pom.xml:
+
+         <repositories>
+            <repository>
+                <id>in-project</id>
+                <name>In Project Repo</name>
+                <url>file://${project.basedir}/lib</url>
+            </repository>
+        </repositories>
+        <dependencies>
+
+        <dependency>
+            <groupId>MyUtils</groupId>
+            <artifactId>MyUtils</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+    Example in Proxymity

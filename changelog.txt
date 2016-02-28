@@ -1,0 +1,6 @@
+v1.0.2
+- Added com.toortools.http package, HTTP classes abstraction.
+
+v1.0.1
+- Added writeStringToFile and writeBytesToFile
+
