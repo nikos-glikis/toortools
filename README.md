@@ -54,19 +54,19 @@ Linux:
 
     mvn clean compile assembly:single
     
-Jar is created in target/ subfolder in the directory (object0r-toortools-1.0.2-jar-with-dependencies.jar)
+Jar is created in target/ subfolder in the directory (toortools-1.0.2-jar-with-dependencies.jar)
 
 At this point you can use the jar as any other jar.
 
-If you want to use it in a maven project you will have to install the jar in the local maven repository:
+If you want to use it in a maven project you will have to install the jar in the local maven repository (install.sh):
     
-    mvn install:install-file  -DgroupId=com.object0r -DartifactId=com.object0r -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/object0r-toortools-1.0.2-jar-with-dependencies.jar
+    mvn install:install-file  -DgroupId=com.object0r -DartifactId=toortools -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/toortools-1.0.2-jar-with-dependencies.jar
 
 To use it add below in your pom.xml:    
     
-            <dependency>
-                <groupId>com.object0r</groupId>
-                <artifactId>com.object0r</artifactId>
-                <version>1.0.2</version>
-            </dependency>
+                <dependency>
+                    <groupId>com.object0r</groupId>
+                    <artifactId>toortools</artifactId>
+                    <version>1.0.2</version>
+                </dependency>
             

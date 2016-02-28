@@ -51,7 +51,7 @@
 
         <dependency>
             <groupId>com.object0r</groupId>
-            <artifactId>com.object0r</artifactId>
+            <artifactId>object0r-toortools</artifactId>
             <version>1.0.2</version>
         </dependency>
 
