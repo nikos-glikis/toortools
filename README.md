@@ -5,6 +5,8 @@ Collection of small tools and classes I regularly use in my projects. I also cre
 
 It is created based on my needs and my programming style. I have tried to create it as parameterizable and static as possible.
 
+It is build as a maven project. That means that you must install it in your local repository before you use it, or build it as a jar.
+
 If you have any suggestions please let me know.
 
 Some things included:
@@ -26,3 +28,45 @@ Some things included:
 * String to MD5
 * Get External Ip
 * Torify traffic (Windows and Linux)
+
+Installation
+------------
+
+There are 2 ways to use this repository:
+
+* As a maven repository
+* As a jar file added to your project's classpath.
+
+
+* Install Maven:
+
+Windows:
+
+    - Download maven binaries from: https://maven.apache.org/download.cgi (apache-maven-3.3.9-bin.zip or similar should be ok)
+    - Extract somewhere and add the bin/ directory to the systems PATH.
+    - You know when maven is installed when you run mvn and you don't get a not exists error.
+    
+Linux:
+
+    sudo apt-get install maven
+    
+* Create a single jar with all dependencies packed:
+
+    mvn clean compile assembly:single
+    
+Jar is created in target/ subfolder in the directory (object0r-toortools-1.0.2-jar-with-dependencies.jar)
+
+At this point you can use the jar as any other jar.
+
+If you want to use it in a maven project you will have to install the jar in the local maven repository:
+    
+    mvn install:install-file  -DgroupId=com.object0r -DartifactId=com.object0r -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/object0r-toortools-1.0.2-jar-with-dependencies.jar
+
+To use it add below in your pom.xml:    
+    
+            <dependency>
+                <groupId>com.object0r</groupId>
+                <artifactId>com.object0r</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            
