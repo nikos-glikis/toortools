@@ -5,7 +5,9 @@ Collection of small tools and classes I regularly use in my projects. I also cre
 
 It is created based on my needs and my programming style. I have tried to create it as parameterizable and static as possible.
 
-It is build as a maven project. That means that you must install it in your local repository before you use it, or build it as a jar.
+It is build as a maven project. That means that you must install it in your local repository before you use it, or build it as a jar. 
+
+.idea folder is included, this is not related to Java, but its the intellij files a cloned repository is ready for development.
 
 If you have any suggestions please let me know.
 
