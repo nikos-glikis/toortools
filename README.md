@@ -25,4 +25,4 @@ Some things included:
 * Basic String manipulation
 * String to MD5
 * Get External Ip
-* Torrify traffic (Windows and Linux)
+* Torify traffic (Windows and Linux)
