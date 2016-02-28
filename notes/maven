@@ -30,12 +30,10 @@
 
     a) Download and register with MAVEN:
         1) Put in:
-           target/MyUtils/MyUtils/{version}/MyUtils-{version}.jar
+
 
     b) Run:
-    mvn install:install-file  -DgroupId=MyUtils -DartifactId=MyUtils -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/MyUtils-1.0.2-jar-with-dependencies.jar
-
-    mvn install:install-file  -DgroupId=MyUtils -DartifactId=MyUtils -Dversion={version} -Dpackaging=jar -Dfile=target/MyUtils/MyUtils/{version}/MyUtils-{version}jar
+    # see build.sh and install.sh
     #probably not needed. Just see below.
 
     c) Local Repository dir is: C:\Users\User\.m2\repository
@@ -52,9 +50,10 @@
         <dependencies>
 
         <dependency>
-            <groupId>MyUtils</groupId>
-            <artifactId>MyUtils</artifactId>
+            <groupId>com.object0r</groupId>
+            <artifactId>com.object0r</artifactId>
             <version>1.0.2</version>
         </dependency>
+
 
     Example in Proxymity
