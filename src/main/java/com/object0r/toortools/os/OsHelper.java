@@ -1,7 +1,12 @@
 package com.object0r.toortools.os;
 
-import java.io.File;
+import org.apache.commons.exec.*;
+
+import java.io.*;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by User on 25/4/2015.
@@ -129,6 +134,17 @@ public class OsHelper
         }
     }
 
+    public static long getTimestampSeconds()
+    {
+        return getTimestamp();
+    }
+
+    public static long getTimestamp()
+    {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getTimeInMillis()/1000;
+    }
+
 
     static public Vector<String> getFoldersFilesRecursive(String path)
     {
@@ -160,7 +176,8 @@ public class OsHelper
                 getDirectoryContents( f.getAbsolutePath(), includeDirectories, listSoFar);
 
             }
-            else {
+            else
+            {
                 listSoFar.add(f.getAbsolutePath());
 
             }
@@ -196,6 +213,58 @@ public class OsHelper
             }
         }
         return filenames;
+    }
+
+    public static void killProcessByPid(long pid)
+    {
+        String cmd = null;
+        if (OsHelper.isWindows())
+        {
+            cmd = "taskkill /F /PID " + pid;
+        }
+        else
+        {
+            cmd = "kill -9 "+pid;
+        }
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean isPidRunning(long pid) throws Exception
+    {
+        return isPidRunning(pid, 5, TimeUnit.SECONDS);
+    }
+
+    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    {
+        String line;
+        if (OS.isFamilyWindows())
+        {
+            //tasklist exit code is always 0. Parse output
+            //findstr exit code 0 if found pid, 1 if it doesn't
+            line = "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
+        }
+        else
+        {
+            //ps exit code 0 if process exists, 1 if it doesn't
+            line = "ps -p " + pid;
+        }
+        CommandLine cmdLine = CommandLine.parse(line);
+        DefaultExecutor executor = new DefaultExecutor();
+        // disable logging of stdout/strderr
+        executor.setStreamHandler(new PumpStreamHandler(null, null, null));
+        // disable exception for valid exit values
+        executor.setExitValues(new int[]{0, 1});
+        // set timer for zombie process
+        ExecuteWatchdog timeoutWatchdog = new ExecuteWatchdog(timeunit.toMillis(timeout));
+        executor.setWatchdog(timeoutWatchdog);
+        int exitValue = executor.execute(cmdLine);
+        // 0 is the default exit code which means the process exists
+        return exitValue == 0;
     }
 
 }
