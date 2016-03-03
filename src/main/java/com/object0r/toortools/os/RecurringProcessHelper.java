@@ -203,7 +203,24 @@ public class RecurringProcessHelper
         }
     }
 
-
+    public static void exitAfterSeconds(final long sleepSeconds)
+    {
+        new Thread(){
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(sleepSeconds*1000);
+                    System.out.println("Exiting because "+sleepSeconds+" have passed.");
+                    System.exit(0);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();;
+    }
 
     public static long getPid() throws Exception
     {
