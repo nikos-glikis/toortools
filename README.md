@@ -72,3 +72,15 @@ To use it add below in your pom.xml:
                     <version>1.0.2</version>
                 </dependency>
             
+Install maven 3 ubuntu:
+=======================
+
+http://sysads.co.uk/2014/05/install-apache-maven-3-2-1-ubuntu-14-04/
+
+    sudo apt-get install gdebi
+    
+    wget http://ppa.launchpad.net/natecarlson/maven3/ubuntu/pool/main/m/maven3/maven3_3.2.1-0~ppa1_all.deb
+    
+    sudo gdebi maven3_3.2.1-0~ppa1_all.deb
+    
+    sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/maven
