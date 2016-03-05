@@ -36,6 +36,13 @@ public class LevelDb extends AbstractKeyValueDatabase
         init(filename);
     }
 
+    public void reset()
+    {
+        this.close();
+        destroy();
+        init(filename);
+    }
+
     public LevelDb(String directory, String filename, boolean destroy)
     {
         this.filename = filename;
@@ -176,14 +183,14 @@ public class LevelDb extends AbstractKeyValueDatabase
         }
     }
 
-    public void copyTo(KeyValueDatabaseInterface destination)
+    public void copyEntriesTo(KeyValueDatabaseInterface destination)
     {
         try
         {
             DBIterator iterator = db.iterator();
             try {
                 int i = 1;
-                String[] values = new String[2000];
+
                 HashMap map = new HashMap();
                 for(iterator.seekToFirst(); iterator.hasNext(); iterator.next())
                 {
@@ -207,6 +214,12 @@ public class LevelDb extends AbstractKeyValueDatabase
         {
             e.printStackTrace();
         }
+    }
+
+    @Deprecated
+    public void copyTo(KeyValueDatabaseInterface destination)
+    {
+        copyEntriesTo(destination);
     }
 
     public int getCount()
