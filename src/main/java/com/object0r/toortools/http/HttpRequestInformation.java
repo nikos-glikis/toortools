@@ -1,5 +1,6 @@
 package com.object0r.toortools.http;
 
+import java.net.Proxy;
 import java.util.HashMap;
 
 /**
@@ -17,6 +18,7 @@ public class HttpRequestInformation
     String method = METHODS_GET;
     String url;
     String body;
+    Proxy proxy = Proxy.NO_PROXY;
     int timeoutSeconds = 0;
     HashMap<String, String> headers = new HashMap<String, String>();
 
@@ -153,8 +155,20 @@ public class HttpRequestInformation
         }
     }
 
+    public Proxy getProxy()
+    {
+        return proxy;
+    }
+
+    public void setProxy(Proxy proxy)
+    {
+        this.proxy = proxy;
+    }
+
     public String getMethod()
     {
         return method;
     }
+
+
 }

@@ -21,7 +21,7 @@ public class HTTP
         {
             // Create connection
             url = new URL(httpRequestInformation.getUrl());
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection(httpRequestInformation.getProxy());
 
             Iterator it = httpRequestInformation.getHeaders().entrySet().iterator();
             while (it.hasNext())
