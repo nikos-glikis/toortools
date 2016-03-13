@@ -24,7 +24,7 @@ public class HttpRequestInformation
 
     public void setCookie(String cookie)
     {
-        this.setHeader("Cookie", cookie);
+        this.setHeader("Cookie", cookie.trim());
     }
 
     public int getTimeoutSeconds() {
