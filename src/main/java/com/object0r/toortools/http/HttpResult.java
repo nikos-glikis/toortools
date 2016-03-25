@@ -89,7 +89,20 @@ public class HttpResult
 
     public String getContentAsString()
     {
-        return new String(content);
+        try
+        {
+            return new String(content, "UTF-8");
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            return new String(content);
+        }
+    }
+
+    public String getContentAsString(String encoding) throws Exception
+    {
+        return new String(content, encoding);
     }
 
     public void setContent(byte[] content)

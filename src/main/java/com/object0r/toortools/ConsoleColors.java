@@ -36,4 +36,8 @@ public class ConsoleColors
     {
         printColor(text, ConsoleColors.GREEN);
     }
+    public static void printPurple(String text)
+    {
+        printColor(text, ConsoleColors.GREEN);
+    }
 }
