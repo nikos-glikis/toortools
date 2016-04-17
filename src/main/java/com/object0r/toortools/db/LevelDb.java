@@ -7,6 +7,8 @@ import org.iq80.leveldb.Options;
 import org.iq80.leveldb.WriteBatch;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -287,4 +289,31 @@ public class LevelDb extends AbstractKeyValueDatabase
             e.printStackTrace();
         }
     }
+
+    public void exportKeysToFile(String filename)
+    {
+        try {
+            int badCount=0, totalCount=0, found=0;
+            long max= 0;
+            PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
+            DBIterator iterator = db.iterator();
+            try {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+                    String key = asString(iterator.peekNext().getKey());
+                    String value = asString(iterator.peekNext().getValue());
+                    pr.println(key + " - "+value);
+                    totalCount++;
+
+                }
+            } finally {
+                pr.close();
+                System.out.println("Total: " + totalCount);
+                iterator.close();
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 }
