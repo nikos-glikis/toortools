@@ -1,6 +1,8 @@
 package com.object0r.toortools;
 
+import com.object0r.toortools.datatypes.exceptions.ReadUrlException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -32,22 +34,21 @@ public class Utilities
         try
         {
             Class.forName("org.sqlite.JDBC");
-            if (! new File(new File(path).getParent()).exists())
+            if (!new File(new File(path).getParent()).exists())
             {
                 new File(new File(path).getParent()).mkdirs();
             }
 
             c = DriverManager.getConnection("jdbc:sqlite:" + path);
 
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
         return c;
     }
 
-    public static void downloadFile(String url, String outputPath) throws  Exception
+    public static void downloadFile(String url, String outputPath) throws Exception
     {
         downloadFile(url, outputPath, true);
 
@@ -72,15 +73,18 @@ public class Utilities
     {
         return postRequest(targetURL, postParams, false, "");
     }
+
     public static String postRequest(String targetURL, String postParams, boolean returnCookies)
     {
         return postRequest(targetURL, postParams, returnCookies, "");
     }
+
     public static String postRequest(String targetURL, String postParams, boolean returnCookies, String givenCookies)
     {
         URL url;
         HttpURLConnection connection = null;
-        try {
+        try
+        {
 
             // Create connection
             url = new URL(targetURL);
@@ -88,10 +92,10 @@ public class Utilities
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type",
                     "application/x-www-form-urlencoded");
-            if ( givenCookies != null && !givenCookies.equals(""))
+            if (givenCookies != null && !givenCookies.equals(""))
             {
-                givenCookies = givenCookies.replace("Cookie: ","");
-                connection.setRequestProperty("Cookie",givenCookies);
+                givenCookies = givenCookies.replace("Cookie: ", "");
+                connection.setRequestProperty("Cookie", givenCookies);
             }
             connection.setRequestProperty("Content-Length", ""
                     + Integer.toString(postParams.getBytes().length));
@@ -117,17 +121,16 @@ public class Utilities
             StringBuffer response = new StringBuffer();
             while (sc.hasNext())
             {
-                response.append(sc.nextLine()+"\n");
+                response.append(sc.nextLine() + "\n");
             }
 
             if (!returnCookies)
             {
                 return response.toString();
-            }
-            else
+            } else
             {
                 String cookies = "";
-                Map<String,List<String>> map = connection.getHeaderFields();
+                Map<String, List<String>> map = connection.getHeaderFields();
                 for (Map.Entry<String, List<String>> entry : map.entrySet())
                 {
                     //System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -137,31 +140,31 @@ public class Utilities
                         Iterator<String> iter = l.iterator();
                         for (String c : l)
                         {
-                            cookies += c +"; ";
+                            cookies += c + "; ";
                         }
                     }
                 }
                 if (cookies.equals(""))
                 {
                     return null;
-                }
-                else
+                } else
                 {
                     return cookies;
                 }
             }
 
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
 
             e.printStackTrace();
             System.out.println("e");
             return null;
 
-        } finally {
+        } finally
+        {
 
-            if (connection != null) {
+            if (connection != null)
+            {
                 connection.disconnect();
             }
         }
@@ -169,7 +172,7 @@ public class Utilities
 
     public static void writeStringToFile(String filename, String content) throws Exception
     {
-        writeBytesToFile(filename,content.getBytes());
+        writeBytesToFile(filename, content.getBytes());
     }
 
     public static void writeBytesToFile(String filename, byte[] content) throws Exception
@@ -180,18 +183,31 @@ public class Utilities
     static public void trustEverybody()
     {
 
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
-            public X509Certificate[] getAcceptedIssuers(){return null;}
-            public void checkClientTrusted(X509Certificate[] certs, String authType){}
-            public void checkServerTrusted(X509Certificate[] certs, String authType){}
-        }};
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager()
+        {
+            public X509Certificate[] getAcceptedIssuers()
+            {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType)
+            {
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType)
+            {
+            }
+        }
+        };
 
         // Install the all-trusting trust manager
-        try {
+        try
+        {
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             ;
         }
         SSLUtilities.trustAllHostnames();
@@ -203,7 +219,7 @@ public class Utilities
         return readFileEncoding(path, Charset.forName("UTF-8"));
     }
 
-    public static String readFileEncoding(String path, Charset encoding)  throws IOException
+    public static String readFileEncoding(String path, Charset encoding) throws IOException
     {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
@@ -212,61 +228,54 @@ public class Utilities
 
     public static String readUrl(String url, String cookie) throws Exception
     {
-        return readUrl(url, cookie,"utf-8");
+        return readUrl(url, cookie, "utf-8");
     }
 
-    public static String readUrl(String url ) throws Exception
+    public static String readUrl(String url) throws Exception
     {
-        return readUrl(url, "","utf-8");
+        return readUrl(url, "", "utf-8");
     }
-    public static String readUrl(String url, String cookie, String encoding) throws Exception
+
+    public static String readUrl(String url, String cookie, String encoding) throws ReadUrlException
     {
+
+        HttpURLConnection conn = null;
         try
         {
             URL oracle = new URL(url);
-            cookie = cookie.replace("Cookie: ","");
-            HttpURLConnection conn = (HttpURLConnection) oracle.openConnection();
-            conn.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0");
-            conn.setRequestProperty("Cookie",cookie);
-            BufferedReader in = new BufferedReader( new InputStreamReader(conn.getInputStream(), encoding ) );
+            cookie = cookie.replace("Cookie: ", "");
+            conn = (HttpURLConnection) oracle.openConnection();
+            conn.setRequestProperty("User-Agent", getBrowserUserAgent());
+            conn.setRequestProperty("Cookie", cookie);
 
-            /*String inputLine;
-            StringBuffer sb = new StringBuffer();
-            while ((inputLine = in.readLine()) != null)
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(conn.getInputStream(), writer, encoding);
+
+            return writer.toString();
+        } catch (Exception e)
+        {
+            ReadUrlException readUrlException = new ReadUrlException();
+            readUrlException.setPrimaryException(e);
+
+            if (conn != null && conn.getErrorStream() != null)
             {
-                sb.append(inputLine + "\n");
-
+                try
+                {
+                    readUrlException.setErrorOutput(IOUtils.toString(conn.getErrorStream(), encoding));
+                } catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
             }
-            in.close();
-            return sb.toString();*/
-
-            StringBuffer sb = new StringBuffer();
-            int BUFFER_SIZE=1024;
-            char[] buffer = new char[BUFFER_SIZE]; // or some other size,
-            int charsRead = 0;
-            while ( (charsRead  = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
-                sb.append(buffer, 0, charsRead);
-            }
-            return sb.toString();
-        }
-        catch (FileNotFoundException e)
-        {
-            throw e;
-            //System.out.println("_404 e");
-        }
-
-        catch(Exception e)
-        {
-            //e.printStackTrace();
-            throw e;
+            throw readUrlException;
         }
     }
 
     public static String cut(String from, String to, String t)
     {
-        String  text = new String(t);
-        text = text.substring(text.indexOf(from)+from.length(),text.length());
-        text = text.substring(0,text.indexOf(to));
+        String text = new String(t);
+        text = text.substring(text.indexOf(from) + from.length(), text.length());
+        text = text.substring(0, text.indexOf(to));
         return text;
     }
 
@@ -285,15 +294,19 @@ public class Utilities
         return sb.toString();
     }
 
-    public static  String getIp()
+    public static String getIp()
     {
         try
         {
             return Utilities.readUrl("http://cpanel.com/showip.shtml");
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return null;
         }
+    }
+
+    public static String getBrowserUserAgent()
+    {
+        return "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0";
     }
 }
