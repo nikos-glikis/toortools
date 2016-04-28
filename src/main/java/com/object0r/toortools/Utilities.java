@@ -310,6 +310,8 @@ public class Utilities
         try
         {
             HttpURLConnection connection =(HttpURLConnection)new URL("http://cpanel.com/showip.shtml").openConnection(proxy);
+            connection.setReadTimeout(15000);
+            connection.setConnectTimeout(15000);
             StringWriter writer = new StringWriter();
             IOUtils.copy(connection.getInputStream(), writer, "UTF-8");
             return writer.toString();
