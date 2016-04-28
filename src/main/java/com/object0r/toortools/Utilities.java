@@ -10,6 +10,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -294,19 +295,28 @@ public class Utilities
         return sb.toString();
     }
 
-    public static String getIp()
-    {
-        try
-        {
-            return Utilities.readUrl("http://cpanel.com/showip.shtml");
-        } catch (Exception e)
-        {
-            return null;
-        }
-    }
-
     public static String getBrowserUserAgent()
     {
         return "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0";
+    }
+
+    public static String getIp()
+    {
+        return Utilities.getIp(Proxy.NO_PROXY);
+    }
+
+    public static  String getIp(Proxy proxy)
+    {
+        try
+        {
+            HttpURLConnection connection =(HttpURLConnection)new URL("http://cpanel.com/showip.shtml").openConnection(proxy);
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(connection.getInputStream(), writer, "UTF-8");
+            return writer.toString();
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 }
