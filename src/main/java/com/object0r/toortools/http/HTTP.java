@@ -95,6 +95,15 @@ public class HTTP
             HttpResult httpResult = new HttpResult();
             httpResult.setContent(bytes);
 
+            if (connection.getErrorStream()!=null)
+            {
+                is = connection.getErrorStream();
+                bytes = IOUtils.toByteArray(is);
+                httpResult.setErrorContent(bytes);
+                System.out.println(new String(bytes));
+            }
+
+
             Map<String,List<String>> map = connection.getHeaderFields();
             for (Map.Entry<String, List<String>> entry : map.entrySet())
             {
@@ -115,6 +124,13 @@ public class HTTP
         }
         catch (Exception e)
         {
+            /*            if (connection.getErrorStream()!=null)
+            {*/
+/*            InputStream is = connection.getErrorStream();
+            byte[] bytes = IOUtils.toByteArray(is);
+            //httpResult.setErrorContent(bytes);
+            System.out.println(new String(bytes));*/
+            //          }
             try
             {
                 connection.disconnect();
@@ -123,6 +139,8 @@ public class HTTP
             {
 
             }
+
+
             throw e;
 
         } finally {
