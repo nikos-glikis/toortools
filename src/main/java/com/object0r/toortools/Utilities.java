@@ -307,8 +307,14 @@ public class Utilities
 
     public static  String getIp(Proxy proxy) throws Exception
     {
+        return getIp(proxy, 3);
+    }
+
+    public static  String getIp(Proxy proxy, int maxTries) throws Exception
+    {
         Vector<IpProvider> ipProviders = IpProvidersHelper.getIpProviders();
         Collections.shuffle(ipProviders);
+        int tries = 0;
         for (IpProvider ipProvider: ipProviders)
         {
             try
@@ -318,6 +324,10 @@ public class Utilities
             catch (Exception e)
             {
 
+            }
+            if (tries++>maxTries)
+            {
+                break;
             }
         }
         throw new Exception("No valid ip providers found");
