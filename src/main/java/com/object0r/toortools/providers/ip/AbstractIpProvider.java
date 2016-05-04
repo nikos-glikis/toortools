@@ -41,7 +41,7 @@ abstract public class AbstractIpProvider implements IpProvider
         Pattern p = Pattern.compile("^\\d+\\.\\d+\\.\\d+\\.\\d+$");
         Matcher m = p.matcher(ip);
 
-        if (ip.length() > 13 || ip.length() < 5 || !m.find())
+        if (ip.length() > 15 || ip.length() < 6 || !m.find())
         {
             return false;
         }
