@@ -9,6 +9,12 @@ class IpifyIpProvider extends AbstractIpProvider
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
     {
+        return getIp(proxy, defaultConnectTimeout, defaultReadTimeout);
+    }
+
+    @Override
+    public String getIp(Proxy proxy, int connectTimeoutSeconds, int readTimeoutSeconds) throws InvalidProviderException
+    {
         try
         {
             String ip =   readUrl("https://api.ipify.org/?format=txt", proxy);

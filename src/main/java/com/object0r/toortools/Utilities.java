@@ -307,10 +307,10 @@ public class Utilities
 
     public static  String getIp(Proxy proxy) throws Exception
     {
-        return getIp(proxy, 3);
+        return getIp(proxy, 3, 15, 15);
     }
 
-    public static  String getIp(Proxy proxy, int maxTries) throws Exception
+    public static  String getIp(Proxy proxy, int maxTries, int connectTimeoutSeconds, int readTimeoutSeconds) throws Exception
     {
         Vector<IpProvider> ipProviders = IpProvidersHelper.getIpProviders();
         Collections.shuffle(ipProviders);
@@ -319,7 +319,7 @@ public class Utilities
         {
             try
             {
-                return ipProvider.getIp(proxy);
+                return ipProvider.getIp(proxy, connectTimeoutSeconds, readTimeoutSeconds);
             }
             catch (Exception e)
             {

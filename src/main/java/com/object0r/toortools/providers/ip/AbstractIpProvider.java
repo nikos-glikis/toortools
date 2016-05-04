@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 
 abstract public class AbstractIpProvider implements IpProvider
 {
+    protected final int defaultConnectTimeout = 15;
+    protected final int defaultReadTimeout = 15;
+
     public String getIp() throws InvalidProviderException
     {
         return this.getIp(Proxy.NO_PROXY);
@@ -20,9 +23,14 @@ abstract public class AbstractIpProvider implements IpProvider
 
     public String readUrl(String url, Proxy proxy) throws Exception
     {
+        return readUrl(url, proxy, defaultConnectTimeout, defaultReadTimeout );
+    }
+
+    public String readUrl(String url, Proxy proxy, int connectTimeoutSeconds, int readTimeoutSeconds) throws Exception
+    {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection(proxy);
-        connection.setReadTimeout(15000);
-        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(readTimeoutSeconds*1000);
+        connection.setConnectTimeout(connectTimeoutSeconds*1000);
         StringWriter writer = new StringWriter();
         IOUtils.copy(connection.getInputStream(), writer, "UTF-8");
         return writer.toString().trim();

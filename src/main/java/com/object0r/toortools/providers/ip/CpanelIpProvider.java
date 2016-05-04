@@ -13,9 +13,15 @@ class CpanelIpProvider extends AbstractIpProvider
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
     {
+        return getIp(proxy, 15, 15);
+    }
+
+    @Override
+    public String getIp(Proxy proxy, int connectTimeoutSeconds, int readTimeoutSeconds) throws InvalidProviderException
+    {
         try
         {
-            String ip=   readUrl("http://cpanel.com/showip.shtml", proxy);
+            String ip=   readUrl("http://cpanel.com/showip.shtml", proxy, connectTimeoutSeconds, readTimeoutSeconds);
 
             if (isValidIp(ip))
             {
