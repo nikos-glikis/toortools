@@ -255,7 +255,7 @@ public class Utilities
             return writer.toString();
         } catch (Exception e)
         {
-            ReadUrlException readUrlException = new ReadUrlException();
+            ReadUrlException readUrlException = new ReadUrlException(e.toString());
             readUrlException.setPrimaryException(e);
 
             if (conn != null && conn.getErrorStream() != null)
