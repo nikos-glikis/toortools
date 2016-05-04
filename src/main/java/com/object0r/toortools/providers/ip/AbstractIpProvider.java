@@ -25,7 +25,7 @@ abstract public class AbstractIpProvider implements IpProvider
         connection.setConnectTimeout(15000);
         StringWriter writer = new StringWriter();
         IOUtils.copy(connection.getInputStream(), writer, "UTF-8");
-        return writer.toString();
+        return writer.toString().trim();
     }
 
     public static boolean isValidIp(String ip)
