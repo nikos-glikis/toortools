@@ -1,6 +1,9 @@
 package com.object0r.toortools;
 
 import com.object0r.toortools.datatypes.exceptions.ReadUrlException;
+import com.object0r.toortools.providers.ip.AbstractIpProvider;
+import com.object0r.toortools.providers.ip.IpProvider;
+import com.object0r.toortools.providers.ip.IpProvidersHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -22,10 +25,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Utilities
 {
@@ -300,26 +300,26 @@ public class Utilities
         return "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0";
     }
 
-    public static String getIp()
+    public static String getIp() throws Exception
     {
         return Utilities.getIp(Proxy.NO_PROXY);
     }
 
-    public static  String getIp(Proxy proxy)
+    public static  String getIp(Proxy proxy) throws Exception
     {
-        try
+        Vector<IpProvider> ipProviders = IpProvidersHelper.getIpProviders();
+        Collections.shuffle(ipProviders);
+        for (IpProvider ipProvider: ipProviders)
         {
-            HttpURLConnection connection =(HttpURLConnection)new URL("http://cpanel.com/showip.shtml").openConnection(proxy);
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(15000);
-            StringWriter writer = new StringWriter();
-            IOUtils.copy(connection.getInputStream(), writer, "UTF-8");
-            return writer.toString();
+            try
+            {
+                return ipProvider.getIp(proxy);
+            }
+            catch (Exception e)
+            {
+
+            }
         }
-        catch (Exception e)
-        {
-            System.out.println(e.toString());
-            return null;
-        }
+        throw new Exception("No valid ip providers found");
     }
 }
