@@ -1,10 +1,11 @@
-package com.object0r.toortools.providers.ip;
+package com.object0r.toortools.providers.ip.implementation;
 
 import com.object0r.toortools.providers.InvalidProviderException;
+import com.object0r.toortools.providers.ip.AbstractIpProvider;
 
 import java.net.Proxy;
 
-class IpifyIpProvider extends AbstractIpProvider
+public class IpifyIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException

@@ -1,6 +1,7 @@
-package com.object0r.toortools.providers.ip;
+package com.object0r.toortools.providers.ip.implementation;
 
 import com.object0r.toortools.providers.InvalidProviderException;
+import com.object0r.toortools.providers.ip.AbstractIpProvider;
 import org.apache.commons.io.IOUtils;
 
 import java.io.StringWriter;
@@ -8,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 
-class CpanelIpProvider extends AbstractIpProvider
+public class CpanelIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException

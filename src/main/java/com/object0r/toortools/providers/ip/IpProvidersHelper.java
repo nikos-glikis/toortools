@@ -1,5 +1,7 @@
 package com.object0r.toortools.providers.ip;
 
+import com.object0r.toortools.providers.ip.implementation.CpanelIpProvider;
+import com.object0r.toortools.providers.ip.implementation.IpifyIpProvider;
 
 import java.util.Vector;
 
