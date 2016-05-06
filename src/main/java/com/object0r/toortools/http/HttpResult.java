@@ -72,7 +72,13 @@ public class HttpResult
         for (HttpHeader httpHeader : httpHeaders)
         {
             //cookies.add(httpHeader.getValue());
-            cookies += cookies += httpHeader.getValue() +"; ";
+            String c = httpHeader.getValue();
+            if (c.contains(";"))
+            {
+                c = c.substring(0, c.indexOf(";"));
+            }
+
+             cookies = cookies + c +"; ";
         }
         return cookies;
     }

@@ -3,9 +3,7 @@ package com.object0r.toortools.http;
 import java.net.Proxy;
 import java.util.HashMap;
 
-/**
- * Created by Nikos Glikis on 23/1/2016.
- */
+
 public class HttpRequestInformation
 {
     public final String METHODS_POST = "POST";
@@ -21,6 +19,7 @@ public class HttpRequestInformation
     Proxy proxy = Proxy.NO_PROXY;
     int timeoutSeconds = 0;
     HashMap<String, String> headers = new HashMap<String, String>();
+    boolean followRedirects = true;
 
     public void setCookie(String cookie)
     {
@@ -170,5 +169,13 @@ public class HttpRequestInformation
         return method;
     }
 
+    public boolean isFollowRedirects()
+    {
+        return followRedirects;
+    }
 
+    public void setFollowRedirects(boolean followRedirects)
+    {
+        this.followRedirects = followRedirects;
+    }
 }
