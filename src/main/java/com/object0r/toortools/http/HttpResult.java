@@ -102,7 +102,7 @@ public class HttpResult
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            System.out.println(e.toString());
             return new String(content);
         }
     }

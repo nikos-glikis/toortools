@@ -5,12 +5,12 @@ import com.object0r.toortools.providers.ip.AbstractIpProvider;
 
 import java.net.Proxy;
 
-public class IpifyIpProvider extends AbstractIpProvider
+public class IpEchoIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
     {
-        return getIp(proxy, defaultConnectTimeout, defaultReadTimeout);
+        return getIp(proxy, 15, 15);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class IpifyIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip =   readUrl("http://api.ipify.org/?format=txt", proxy);
+            String ip=   readUrl("http://ipecho.net/plain", proxy, connectTimeoutSeconds, readTimeoutSeconds);
 
             if (isValidIp(ip))
             {

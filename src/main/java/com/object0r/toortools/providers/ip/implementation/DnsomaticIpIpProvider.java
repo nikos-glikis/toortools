@@ -5,7 +5,7 @@ import com.object0r.toortools.providers.ip.AbstractIpProvider;
 
 import java.net.Proxy;
 
-public class IpifyIpProvider extends AbstractIpProvider
+public class DnsomaticIpIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
@@ -18,7 +18,7 @@ public class IpifyIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip =   readUrl("http://api.ipify.org/?format=txt", proxy);
+            String ip =   readUrl("http://myip.dnsomatic.com/", proxy);
 
             if (isValidIp(ip))
             {

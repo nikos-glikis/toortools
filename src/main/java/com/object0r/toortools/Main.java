@@ -12,22 +12,35 @@ public class Main
 
     public static void main(String[] args)
     {
-        try {
-            System.out.println(Utilities.getIp(Proxy.NO_PROXY));
-        } catch (Exception e) {
+        try
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                System.out.println(Utilities.getIp(Proxy.NO_PROXY));
+            }
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
 
         RecurringProcessHelper.checkAndRun();
-        try {
+
+        try
+        {
             OsHelper.killProcessByPid(RecurringProcessHelper.getPid());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
         System.out.println("Testssad");
-        try {
+        try
+        {
             Thread.sleep(20000);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
         System.out.println("Tests");
