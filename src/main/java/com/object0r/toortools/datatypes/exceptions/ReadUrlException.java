@@ -2,6 +2,10 @@ package com.object0r.toortools.datatypes.exceptions;
 
 public class ReadUrlException extends Exception
 {
+    public ReadUrlException(String message)
+    {
+        super(message);
+    }
     private Exception primaryException;
 
     public String errorOutput;

@@ -19,7 +19,7 @@ public class TORExample
         TorHelper.torify(25);
         TorHelper.restartTor();
         TorHelper.changeIp();
-        System.out.println(Utilities.getIp());
+        //System.out.println(Utilities.getIp());
 
 
     }

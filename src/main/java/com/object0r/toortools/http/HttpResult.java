@@ -8,6 +8,7 @@ public class HttpResult
     byte content[];
     String cookie;
     ArrayList<HttpHeader> headers = new ArrayList<HttpHeader>();
+    private byte[] errorContent;
 
     /**
      * Adds a header. (can be multiple Set-Cookie for example)
@@ -124,5 +125,20 @@ public class HttpResult
     public void setCookie(String cookie)
     {
         this.cookie = cookie;
+    }
+
+    public void setErrorContent(byte[] errorContent)
+    {
+        this.errorContent = errorContent;
+    }
+
+    public byte[] getErrorContent()
+    {
+        return errorContent;
+    }
+
+    public String getErrorContentAsString()
+    {
+        return new String(errorContent);
     }
 }

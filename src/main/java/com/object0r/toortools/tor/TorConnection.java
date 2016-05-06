@@ -99,7 +99,7 @@ public class TorConnection
         catch (Exception e)
         {
             System.out.println("Exception happened. (tor change ip)");
-            String newIp = Utilities.getIp();
+
             //System.out.println("new ip: "+newIp);
             //e.printStackTrace();
 
