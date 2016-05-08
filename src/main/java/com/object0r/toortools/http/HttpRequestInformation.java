@@ -3,9 +3,7 @@ package com.object0r.toortools.http;
 import java.net.Proxy;
 import java.util.HashMap;
 
-/**
- * Created by Nikos Glikis on 23/1/2016.
- */
+
 public class HttpRequestInformation
 {
     public final String METHODS_POST = "POST";
@@ -21,17 +19,20 @@ public class HttpRequestInformation
     Proxy proxy = Proxy.NO_PROXY;
     int timeoutSeconds = 0;
     HashMap<String, String> headers = new HashMap<String, String>();
+    boolean followRedirects = true;
 
     public void setCookie(String cookie)
     {
         this.setHeader("Cookie", cookie.trim());
     }
 
-    public int getTimeoutSeconds() {
+    public int getTimeoutSeconds()
+    {
         return timeoutSeconds;
     }
 
-    public void setTimeoutSeconds(int timeoutSeconds) {
+    public void setTimeoutSeconds(int timeoutSeconds)
+    {
         this.timeoutSeconds = timeoutSeconds;
     }
 
@@ -77,40 +78,46 @@ public class HttpRequestInformation
         return method.equals(METHODS_LINK);
     }
 
-    public void setMethodPost()
+    public HttpRequestInformation setMethodPost()
     {
         this.method = METHODS_POST;
+        return this;
     }
 
-    public void setMethodGet()
+    public HttpRequestInformation setMethodGet()
     {
         this.method = METHODS_GET;
+        return this;
     }
 
-    public void setMethodPut()
+    public HttpRequestInformation setMethodPut()
     {
         this.method = METHODS_PUT;
+        return this;
     }
 
-    public void setMethodDelete()
+    public HttpRequestInformation setMethodDelete()
     {
         this.method = METHODS_DELETE;
+        return this;
     }
 
-    public void setMethodPatch()
+    public HttpRequestInformation setMethodPatch()
     {
         this.method = METHODS_PATCH;
+        return this;
     }
 
-    public void setMethodLink()
+    public HttpRequestInformation setMethodLink()
     {
         this.method = METHODS_LINK;
+        return this;
     }
 
-
-    public void setHeader(String key, String value)
+    public HttpRequestInformation setHeader(String key, String value)
     {
         headers.put(key, value);
+        return this;
     }
 
     public HashMap<String, String> getHeaders()
@@ -118,7 +125,7 @@ public class HttpRequestInformation
         return headers;
     }
 
-    public String getHeader( String key)
+    public String getHeader(String key)
     {
         return headers.get(key);
     }
@@ -128,17 +135,21 @@ public class HttpRequestInformation
         return url;
     }
 
-    public void setUrl(String url)
+    public HttpRequestInformation setUrl(String url)
     {
         this.url = url;
+        return this;
     }
 
-    public String getBody() {
+    public String getBody()
+    {
         return body;
     }
 
-    public void setBody(String body) {
+    public HttpRequestInformation setBody(String body)
+    {
         this.body = body;
+        return this;
     }
 
     public boolean hasHeader(String key)
@@ -160,9 +171,10 @@ public class HttpRequestInformation
         return proxy;
     }
 
-    public void setProxy(Proxy proxy)
+    public HttpRequestInformation setProxy(Proxy proxy)
     {
         this.proxy = proxy;
+        return this;
     }
 
     public String getMethod()
@@ -170,5 +182,14 @@ public class HttpRequestInformation
         return method;
     }
 
+    public boolean isFollowRedirects()
+    {
+        return followRedirects;
+    }
 
+    public HttpRequestInformation setFollowRedirects(boolean followRedirects)
+    {
+        this.followRedirects = followRedirects;
+        return this;
+    }
 }

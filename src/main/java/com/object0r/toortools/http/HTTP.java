@@ -70,25 +70,14 @@ public class HTTP
                 connection.setRequestMethod(httpRequestInformation.getMethod());
             }
 
-
-            /* if ( givenCookies != null && !givenCookies.equals(""))
+            if (httpRequestInformation.isFollowRedirects())
             {
-                givenCookies = givenCookies.replace("Cookie: ","");
-                connection.setRequestProperty("Cookie",givenCookies);
-            }*/
-
-
-            /*if (returnCookies)
+                connection.setInstanceFollowRedirects(true);
+            }
+            else
             {
                 connection.setInstanceFollowRedirects(false);
-            }*/
-
-
-
-
-
-
-
+            }
             InputStream is = connection.getInputStream();
             byte[] bytes = IOUtils.toByteArray(is);
 

@@ -1,19 +1,16 @@
-package com.object0r.toortools.providers.ip;
+package com.object0r.toortools.providers.ip.implementation;
 
 import com.object0r.toortools.providers.InvalidProviderException;
-import org.apache.commons.io.IOUtils;
+import com.object0r.toortools.providers.ip.AbstractIpProvider;
 
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.Proxy;
-import java.net.URL;
 
-class CpanelIpProvider extends AbstractIpProvider
+public class IpofinIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
     {
-        return getIp(proxy, 15, 15);
+        return getIp(proxy, defaultConnectTimeout, defaultReadTimeout);
     }
 
     @Override
@@ -21,7 +18,7 @@ class CpanelIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip=   readUrl("http://cpanel.com/showip.shtml", proxy, connectTimeoutSeconds, readTimeoutSeconds);
+            String ip =   readUrl("http://ipof.in/txt", proxy);
 
             if (isValidIp(ip))
             {

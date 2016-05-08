@@ -1,10 +1,11 @@
-package com.object0r.toortools.providers.ip;
+package com.object0r.toortools.providers.ip.implementation;
 
 import com.object0r.toortools.providers.InvalidProviderException;
+import com.object0r.toortools.providers.ip.AbstractIpProvider;
 
 import java.net.Proxy;
 
-class IpifyIpProvider extends AbstractIpProvider
+public class MyExternalIpIpProvider extends AbstractIpProvider
 {
     @Override
     public String getIp(Proxy proxy) throws InvalidProviderException
@@ -17,7 +18,7 @@ class IpifyIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip =   readUrl("https://api.ipify.org/?format=txt", proxy);
+            String ip =   readUrl("http://myexternalip.com/raw", proxy);
 
             if (isValidIp(ip))
             {
