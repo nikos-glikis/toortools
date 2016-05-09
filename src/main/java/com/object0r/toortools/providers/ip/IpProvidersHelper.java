@@ -20,7 +20,6 @@ public class IpProvidersHelper
             ipProviders.add(new DuckduckgoIpProvider());
             ipProviders.add(new IpofinIpProvider());
             ipProviders.add(new WhatismyipaddresscomBotIpProvider());
-            ipProviders.add(new IpApiComIpProvider());
             ipProviders.add(new MyExternalIpIpProvider());
             ipProviders.add(new DnsomaticIpIpProvider());
             ipProviders.add(new WhatIsMyIpIpProvider());
@@ -31,10 +30,8 @@ public class IpProvidersHelper
 
 
 
-
-
-
-
+            //doesn't work with tor
+            //ipProviders.add(new IpApiComIpProvider());
             //slow
             //ipProviders.add(new CheckIpDynDnsIpProvider());
         }
