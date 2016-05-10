@@ -53,11 +53,13 @@ public class OsHelper
             String s = null;
             //System.out.println(command);
             Process p = Runtime.getRuntime().exec(command);
+
             return true;
+
         }
         catch (Exception e)
         {
-            Exception e2 =new  Exception("Some error happened when trying to run the command.");
+            Exception e2 = new Exception("Some error happened when trying to run the command.");
             e.printStackTrace();
             e2.setStackTrace(e.getStackTrace());
             throw e2;
@@ -81,22 +83,24 @@ public class OsHelper
             StringBuilder sb = new StringBuilder();
             StringBuilder errorBuffer = new StringBuilder();
             //System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdInput.readLine()) != null) {
+            while ((s = stdInput.readLine()) != null)
+            {
                 sb.append(s);
                 //System.out.println(s);
             }
 
             // read any errors from the attempted command
             //System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
+            while ((s = stdError.readLine()) != null)
+            {
                 errorBuffer.append(s);
             }
 
-            return new OsCommandOutput(sb.toString(),errorBuffer.toString());
+            return new OsCommandOutput(sb.toString(), errorBuffer.toString());
         }
         catch (Exception e)
         {
-            Exception e2 =new  Exception("Some error happened when trying to run the command.");
+            Exception e2 = new Exception("Some error happened when trying to run the command.");
             e2.setStackTrace(e.getStackTrace());
             throw e2;
         }
@@ -115,6 +119,7 @@ public class OsHelper
 
     /**
      * Deletes all files in directory. Skips folders.
+     *
      * @param folder
      * @throws Exception
      */
@@ -136,7 +141,7 @@ public class OsHelper
     public static long getTimestamp()
     {
         Calendar calendar = Calendar.getInstance();
-        return calendar.getTimeInMillis()/1000;
+        return calendar.getTimeInMillis() / 1000;
     }
 
 
@@ -150,24 +155,26 @@ public class OsHelper
         return getDirectoryContents(path, includeDirectories, new Vector<String>());
     }
 
-    static private Vector<String> getDirectoryContents( String path, boolean includeDirectories, Vector<String> listSoFar )
+    static private Vector<String> getDirectoryContents(String path, boolean includeDirectories, Vector<String> listSoFar)
     {
         if (listSoFar == null)
         {
             listSoFar = new Vector<String>();
         }
-        File root = new File( path );
+        File root = new File(path);
         File[] list = root.listFiles();
 
         if (list == null) return listSoFar;
 
-        for ( File f : list ) {
-            if ( f.isDirectory() ) {
+        for (File f : list)
+        {
+            if (f.isDirectory())
+            {
                 if (includeDirectories)
                 {
                     listSoFar.add(f.getAbsolutePath());
                 }
-                getDirectoryContents( f.getAbsolutePath(), includeDirectories, listSoFar);
+                getDirectoryContents(f.getAbsolutePath(), includeDirectories, listSoFar);
 
             }
             else
@@ -186,7 +193,7 @@ public class OsHelper
      * @param folder
      * @return
      */
-    public static  Vector<String> getFoldersFilesRecursiveOld(File folder)
+    public static Vector<String> getFoldersFilesRecursiveOld(File folder)
     {
         Vector<String> filenames = new Vector<String>();
         filenames = getFoldersFileRecursive(folder, filenames);
@@ -203,7 +210,7 @@ public class OsHelper
             }
             else
             {
-                filenames.add( (folder+"/"+fileEntry.getName() ).replace("\\","/"));
+                filenames.add((folder + "/" + fileEntry.getName()).replace("\\", "/"));
             }
         }
         return filenames;
@@ -218,11 +225,14 @@ public class OsHelper
         }
         else
         {
-            cmd = "kill -9 "+pid;
+            cmd = "kill -9 " + pid;
         }
-        try {
+        try
+        {
             Runtime.getRuntime().exec(cmd);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -238,22 +248,9 @@ public class OsHelper
      */
     public static String getPidInformationLine(int pid)
     {
-        String command ;
+        String command = getPidInfoCommand(pid);
         try
         {
-
-            if (OS.isFamilyWindows())
-            {
-                //tasklist exit code is always 0. Parse output
-                //findstr exit code 0 if found pid, 1 if it doesn't
-                command =  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
-            }
-            else
-            {
-                //ps exit code 0 if process exists, 1 if it doesn't
-                //ps aux | grep "   3256 "
-                command=  "px aux | grep \"    " + pid+ " \"";
-            }
             OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
             return osCommandOutput.getStandardOutput();
         }
@@ -269,21 +266,25 @@ public class OsHelper
         return isPidRunning(pid, 5, TimeUnit.SECONDS);
     }
 
-    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    private static String getPidInfoCommand(long pid)
     {
-
-        String line ;
         if (OS.isFamilyWindows())
         {
             //tasklist exit code is always 0. Parse output
             //findstr exit code 0 if found pid, 1 if it doesn't
-            line =  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
+            return "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
         }
         else
         {
             //ps exit code 0 if process exists, 1 if it doesn't
-            line =  "ps -p " + pid;
+            return "ps -p " + pid;
         }
+    }
+
+    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    {
+        String line = getPidInfoCommand(pid);
+
         CommandLine cmdLine = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();
         // disable logging of stdout/strderr
