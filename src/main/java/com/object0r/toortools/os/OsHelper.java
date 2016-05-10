@@ -252,7 +252,7 @@ public class OsHelper
         try
         {
             OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
-            return osCommandOutput.getStandardOutput();
+            return osCommandOutput.getStandardOutput().replace("PID TTY","").replace("TIME CMD","").trim();
         }
         catch (Exception e)
         {
