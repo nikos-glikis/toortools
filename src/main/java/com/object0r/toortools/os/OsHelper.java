@@ -53,10 +53,7 @@ public class OsHelper
             String s = null;
             //System.out.println(command);
             Process p = Runtime.getRuntime().exec(command);
-
             return true;
-
-
         }
         catch (Exception e)
         {
@@ -65,7 +62,6 @@ public class OsHelper
             e2.setStackTrace(e.getStackTrace());
             throw e2;
         }
-
     }
 
     public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception
@@ -75,15 +71,15 @@ public class OsHelper
             String s = null;
             Process p = Runtime.getRuntime().exec(command);
 
-            /*BufferedReader stdInput = new BufferedReader(new
+            BufferedReader stdInput = new BufferedReader(new
                     InputStreamReader(p.getInputStream()));
 
             BufferedReader stdError = new BufferedReader(new
                     InputStreamReader(p.getErrorStream()));
 
             // read the output from the command
-            StringBuffer sb = new StringBuffer();
-            StringBuffer errorBuffer = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
+            StringBuilder errorBuffer = new StringBuilder();
             //System.out.println("Here is the standard output of the command:\n");
             while ((s = stdInput.readLine()) != null) {
                 sb.append(s);
@@ -95,10 +91,8 @@ public class OsHelper
             while ((s = stdError.readLine()) != null) {
                 errorBuffer.append(s);
             }
-            */
-            return new OsCommandOutput("", "");
 
-
+            return new OsCommandOutput(sb.toString(),errorBuffer.toString());
         }
         catch (Exception e)
         {
@@ -231,7 +225,30 @@ public class OsHelper
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    /**
+     * Gives the process line by running:
+     * ps aux | grep pid  for linux and
+     * tasklist | findstr /c:" 56 " for windows
+     *
+     * @param pid
+     * @returns Windows: conhost.exe                   5652 Console                    1      5.500 K
+     * Linux:
+     */
+    public static String getPidInformationLine(int pid)
+    {
+        String command = getPidInfoCommand(pid);
+        try
+        {
+            OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
+            return osCommandOutput.getStandardOutput();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static boolean isPidRunning(long pid) throws Exception
@@ -239,20 +256,25 @@ public class OsHelper
         return isPidRunning(pid, 5, TimeUnit.SECONDS);
     }
 
-    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    private static String getPidInfoCommand(long pid)
     {
-        String line;
         if (OS.isFamilyWindows())
         {
             //tasklist exit code is always 0. Parse output
             //findstr exit code 0 if found pid, 1 if it doesn't
-            line = "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
+            return  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
         }
         else
         {
             //ps exit code 0 if process exists, 1 if it doesn't
-            line = "ps -p " + pid;
+            return  "ps -p " + pid;
         }
+    }
+
+    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    {
+        String line = getPidInfoCommand(pid);
+
         CommandLine cmdLine = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();
         // disable logging of stdout/strderr

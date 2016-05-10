@@ -12,6 +12,10 @@ public class Main
 
     public static void main(String[] args)
     {
+        System.out.println(OsHelper.getPidInformationLine(9308));
+        System.exit(0);
+        /*
+        test proxies
         try
         {
             for (int i = 0; i < 100; i++)
@@ -22,7 +26,7 @@ public class Main
         catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
 
         RecurringProcessHelper.checkAndRun();
 
