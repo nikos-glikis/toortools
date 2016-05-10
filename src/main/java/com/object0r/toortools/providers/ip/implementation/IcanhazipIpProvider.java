@@ -31,6 +31,7 @@ public class IcanhazipIpProvider extends AbstractIpProvider
         }
         catch (Exception e)
         {
+            System.out.println(e);
             throw new InvalidProviderException(e.toString());
         }
     }

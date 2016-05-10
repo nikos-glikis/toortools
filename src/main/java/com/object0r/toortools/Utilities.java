@@ -307,7 +307,7 @@ public class Utilities
 
     public static  String getIp(Proxy proxy) throws Exception
     {
-        return getIp(proxy, 3, 15, 15);
+        return getIp(proxy, 5, 15, 15);
     }
 
     public static  String getIp(Proxy proxy, int maxTries, int connectTimeoutSeconds, int readTimeoutSeconds) throws Exception

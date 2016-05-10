@@ -31,6 +31,7 @@ public class AmazonAwsIpProvider extends AbstractIpProvider
         }
         catch (Exception e)
         {
+            System.out.println(e);
             throw new InvalidProviderException(e.toString());
         }
     }
