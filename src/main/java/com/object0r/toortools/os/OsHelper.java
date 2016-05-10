@@ -238,9 +238,22 @@ public class OsHelper
      */
     public static String getPidInformationLine(int pid)
     {
-        String command = getPidInfoCommand(pid);
+        String command ;
         try
         {
+
+            if (OS.isFamilyWindows())
+            {
+                //tasklist exit code is always 0. Parse output
+                //findstr exit code 0 if found pid, 1 if it doesn't
+                command =  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
+            }
+            else
+            {
+                //ps exit code 0 if process exists, 1 if it doesn't
+                //ps aux | grep "   3256 "
+                command=  "px aux | grep \"    " + pid+ " \"";
+            }
             OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
             return osCommandOutput.getStandardOutput();
         }
@@ -256,25 +269,21 @@ public class OsHelper
         return isPidRunning(pid, 5, TimeUnit.SECONDS);
     }
 
-    private static String getPidInfoCommand(long pid)
+    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
     {
+
+        String line ;
         if (OS.isFamilyWindows())
         {
             //tasklist exit code is always 0. Parse output
             //findstr exit code 0 if found pid, 1 if it doesn't
-            return  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
+            line =  "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
         }
         else
         {
             //ps exit code 0 if process exists, 1 if it doesn't
-            return  "ps -p " + pid;
+            line =  "ps -p " + pid;
         }
-    }
-
-    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
-    {
-        String line = getPidInfoCommand(pid);
-
         CommandLine cmdLine = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();
         // disable logging of stdout/strderr
