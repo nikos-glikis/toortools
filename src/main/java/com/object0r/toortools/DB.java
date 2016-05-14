@@ -187,6 +187,10 @@ public class DB
             }
             dBconnection = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases/" + name + "/" + name + ".db");
             dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/"+SESSION_NAME+"/databases_bak/"+name+"/"+name+".db");
+
+            dBconnection.setAutoCommit(true);
+            dBconnection2.setAutoCommit(true);
+
             Statement st = dBconnection.createStatement();
             ResultSet rs = st.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='values';");
             if (rs.next())
