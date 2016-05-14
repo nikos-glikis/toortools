@@ -9,8 +9,16 @@ import java.util.Vector;
 
 public class DB
 {
+    private final String dbName;
     Connection dBconnection, dBconnection2 ;
+    private String SESSION_NAME;
+
     public synchronized void put(Object key, Object value)
+    {
+        put(key, value,0);
+    }
+
+    public synchronized void put(Object key, Object value, int tries)
     {
         try
         {
@@ -23,7 +31,6 @@ public class DB
             {
                 //e.printStackTrace();
                 //System.exit(0);
-                ;
                 st.close();
                 st = dBconnection.createStatement();
             }
@@ -55,6 +62,12 @@ public class DB
         catch (Exception e)
         {
             e.printStackTrace();
+
+            if (tries == 0)
+            {
+                initializeConnections();
+                put(key,value,tries+1);
+            }
             System.exit(0);
         }
     }
@@ -199,6 +212,8 @@ public class DB
     }
     public  DB(String SESSION_NAME, String name)
     {
+        this.SESSION_NAME = SESSION_NAME;
+        this.dbName = name;
         Statement st = null;
         try
         {
@@ -212,11 +227,8 @@ public class DB
                 new File("sessions/"+SESSION_NAME+"/databases/"+name).mkdirs();
                 new File("sessions/"+SESSION_NAME+"/databases_bak/"+name).mkdirs();
             }
-            dBconnection = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases/" + name + "/" + name + ".db");
-            dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/"+SESSION_NAME+"/databases_bak/"+name+"/"+name+".db");
 
-            dBconnection.setAutoCommit(true);
-            dBconnection2.setAutoCommit(true);
+            initializeConnections();
 
             st = dBconnection.createStatement();
             ResultSet rs = st.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='values';");
@@ -258,6 +270,31 @@ public class DB
                 e1.printStackTrace();
             }
             System.exit(0);
+        }
+    }
+
+    private void initializeConnections()
+    {
+        try
+        {
+
+            if (dBconnection!=null && !dBconnection.isClosed())
+            {
+                dBconnection.close();
+            }
+            if (dBconnection2!=null && !dBconnection2.isClosed())
+            {
+                dBconnection2.close();
+            }
+
+            dBconnection = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases/" + dbName + "/" + dbName+ ".db");
+            dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/"+SESSION_NAME+"/databases_bak/"+dbName+"/"+dbName+".db");
+            dBconnection.setAutoCommit(true);
+            dBconnection2.setAutoCommit(true);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
         }
     }
 }
