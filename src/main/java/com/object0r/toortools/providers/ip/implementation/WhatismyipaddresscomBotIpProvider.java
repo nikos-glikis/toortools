@@ -18,7 +18,7 @@ public class WhatismyipaddresscomBotIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip=   readUrl("http://ipv4bot.whatismyipaddress.com/", proxy, connectTimeoutSeconds, readTimeoutSeconds);
+            String ip = readUrl("http://ipv4bot.whatismyipaddress.com/", proxy, connectTimeoutSeconds, readTimeoutSeconds);
 
             if (isValidIp(ip))
             {

@@ -225,7 +225,7 @@ public class OsHelper
         }
         else
         {
-            cmd = "kill " + pid + " && sleep 5 && kill -9 " +pid;
+            cmd = "kill " + pid + " && sleep 5 && kill -9 " + pid;
         }
         try
         {
@@ -252,7 +252,7 @@ public class OsHelper
         try
         {
             OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
-            return osCommandOutput.getStandardOutput().replace("PID TTY","").replace("TIME CMD","").trim();
+            return osCommandOutput.getStandardOutput().replace("PID TTY", "").replace("TIME CMD", "").trim();
         }
         catch (Exception e)
         {

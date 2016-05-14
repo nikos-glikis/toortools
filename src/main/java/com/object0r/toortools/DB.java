@@ -1,4 +1,5 @@
 package com.object0r.toortools;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -10,12 +11,12 @@ import java.util.Vector;
 public class DB
 {
     private final String dbName;
-    Connection dBconnection, dBconnection2 ;
+    Connection dBconnection, dBconnection2;
     private String SESSION_NAME;
 
     public synchronized void put(Object key, Object value)
     {
-        put(key, value,0);
+        put(key, value, 0);
     }
 
     public synchronized void put(Object key, Object value, int tries)
@@ -25,7 +26,7 @@ public class DB
             Statement st = dBconnection.createStatement();
             try
             {
-                st.execute("INSERT INTO `values` VALUES ('"+key.toString().replace("'", "''")+"', '"+value.toString().replace("'","''")+"')");
+                st.execute("INSERT INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
             }
             catch (Exception e)
             {
@@ -36,14 +37,14 @@ public class DB
             }
 
 
-            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'") ;
+            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'");
             st.close();
             st = dBconnection2.createStatement();
 
             try
             {
 
-                st.execute("INSERT INTO `values` VALUES ('"+key.toString().replace("'", "''")+"', '"+value.toString().replace("'","''")+"')");
+                st.execute("INSERT INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
 
             }
             catch (Exception e)
@@ -55,7 +56,7 @@ public class DB
                 st = dBconnection.createStatement();
             }
 
-            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'") ;
+            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'");
             st.close();
 
         }
@@ -66,7 +67,7 @@ public class DB
             if (tries == 0)
             {
                 initializeConnections();
-                put(key,value,tries+1);
+                put(key, value, tries + 1);
             }
             else
             {
@@ -77,7 +78,8 @@ public class DB
 
     public void exportKeysToFile(String filename)
     {
-        try {
+        try
+        {
 
             PrintWriter pr = new PrintWriter(filename);
 
@@ -99,7 +101,8 @@ public class DB
 
     public void exportValuesToFile(String filename)
     {
-        try {
+        try
+        {
 
             PrintWriter pr = new PrintWriter(filename);
 
@@ -137,14 +140,14 @@ public class DB
         return values;
     }
 
-    public synchronized String  get(int key)
+    public synchronized String get(int key)
     {
         return this.get(new Integer(key).toString());
     }
 
-    public synchronized String  get(String key)
+    public synchronized String get(String key)
     {
-        String value=null;
+        String value = null;
         Statement st = null;
         try
         {
@@ -162,7 +165,7 @@ public class DB
         {
             try
             {
-                if (st!=null && !st.isClosed())
+                if (st != null && !st.isClosed())
                 {
                     st.close();
                 }
@@ -176,10 +179,12 @@ public class DB
         }
         return value;
     }
+
     public DB()
     {
         this("DefaultSession", "DefaultDb");
     }
+
     public synchronized HashMap<String, String> getAll()
     {
         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -201,7 +206,7 @@ public class DB
             e.printStackTrace();
             try
             {
-                if (st!=null && !st.isClosed())
+                if (st != null && !st.isClosed())
                 {
                     st.close();
                 }
@@ -213,7 +218,8 @@ public class DB
         }
         return hashMap;
     }
-    public  DB(String SESSION_NAME, String name)
+
+    public DB(String SESSION_NAME, String name)
     {
         this.SESSION_NAME = SESSION_NAME;
         this.dbName = name;
@@ -221,14 +227,14 @@ public class DB
         try
         {
             Class.forName("org.sqlite.JDBC");
-            if (new File("sessions/"+SESSION_NAME+"/databases/"+name).exists() && new File("sessions/"+SESSION_NAME+"/databases/"+name).isDirectory())
+            if (new File("sessions/" + SESSION_NAME + "/databases/" + name).exists() && new File("sessions/" + SESSION_NAME + "/databases/" + name).isDirectory())
             {
 
             }
             else
             {
-                new File("sessions/"+SESSION_NAME+"/databases/"+name).mkdirs();
-                new File("sessions/"+SESSION_NAME+"/databases_bak/"+name).mkdirs();
+                new File("sessions/" + SESSION_NAME + "/databases/" + name).mkdirs();
+                new File("sessions/" + SESSION_NAME + "/databases_bak/" + name).mkdirs();
             }
 
             initializeConnections();
@@ -246,7 +252,7 @@ public class DB
             }
 
             //db2
-            st =dBconnection2.createStatement();
+            st = dBconnection2.createStatement();
             rs = st.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='values';");
             if (rs.next())
             {
@@ -263,7 +269,7 @@ public class DB
             e.printStackTrace();
             try
             {
-                if (st!= null && !st.isClosed())
+                if (st != null && !st.isClosed())
                 {
                     st.close();
                 }
@@ -281,17 +287,17 @@ public class DB
         try
         {
 
-            if (dBconnection!=null && !dBconnection.isClosed())
+            if (dBconnection != null && !dBconnection.isClosed())
             {
                 dBconnection.close();
             }
-            if (dBconnection2!=null && !dBconnection2.isClosed())
+            if (dBconnection2 != null && !dBconnection2.isClosed())
             {
                 dBconnection2.close();
             }
 
-            dBconnection = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases/" + dbName + "/" + dbName+ ".db");
-            dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/"+SESSION_NAME+"/databases_bak/"+dbName+"/"+dbName+".db");
+            dBconnection = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases/" + dbName + "/" + dbName + ".db");
+            dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases_bak/" + dbName + "/" + dbName + ".db");
             dBconnection.setAutoCommit(true);
             dBconnection2.setAutoCommit(true);
         }

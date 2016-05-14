@@ -18,7 +18,7 @@ public class MyExternalIpIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip =   readUrl("http://myexternalip.com/raw", proxy);
+            String ip = readUrl("http://myexternalip.com/raw", proxy);
 
             if (isValidIp(ip))
             {
