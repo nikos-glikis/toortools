@@ -68,7 +68,10 @@ public class DB
                 initializeConnections();
                 put(key,value,tries+1);
             }
-            System.exit(0);
+            else
+            {
+                System.exit(0);
+            }
         }
     }
 
