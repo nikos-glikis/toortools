@@ -225,7 +225,7 @@ public class OsHelper
         }
         else
         {
-            cmd = "kill -9 " + pid;
+            cmd = "kill " + pid + " && sleep 5 && kill -9 " +pid;
         }
         try
         {
