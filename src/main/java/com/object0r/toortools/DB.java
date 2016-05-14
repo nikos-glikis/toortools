@@ -2,10 +2,7 @@ package com.object0r.toortools;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -132,9 +129,10 @@ public class DB
     public synchronized String  get(String key)
     {
         String value=null;
+        Statement st = null;
         try
         {
-            Statement st = dBconnection.createStatement();
+            st = dBconnection.createStatement();
             ResultSet rs = st.executeQuery("SELECT `value` FROM `values` WHERE `key` = '" + key.replace("'", "''") + "'");
 
             if (rs.next())
@@ -142,9 +140,22 @@ public class DB
                 value = rs.getString(1);
             }
             rs.close();
+            st.close();
         }
         catch (Exception e)
         {
+            try
+            {
+                if (st!=null && !st.isClosed())
+                {
+                    st.close();
+                }
+            }
+            catch (SQLException e1)
+            {
+                e1.printStackTrace();
+            }
+
             e.printStackTrace();
         }
         return value;
@@ -156,23 +167,39 @@ public class DB
     public synchronized HashMap<String, String> getAll()
     {
         HashMap<String, String> hashMap = new HashMap<String, String>();
+        Statement st = null;
         try
         {
-            Statement st = dBconnection.createStatement();
+            st = dBconnection.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM  `values` ");
             while (rs.next())
             {
                 hashMap.put(rs.getString(1), rs.getString(2));
             }
+            rs.close();
+            st.close();
         }
+
         catch (Exception e)
         {
             e.printStackTrace();
+            try
+            {
+                if (st!=null && !st.isClosed())
+                {
+                    st.close();
+                }
+            }
+            catch (SQLException e1)
+            {
+                e1.printStackTrace();
+            }
         }
         return hashMap;
     }
     public  DB(String SESSION_NAME, String name)
     {
+        Statement st = null;
         try
         {
             Class.forName("org.sqlite.JDBC");
@@ -191,7 +218,7 @@ public class DB
             dBconnection.setAutoCommit(true);
             dBconnection2.setAutoCommit(true);
 
-            Statement st = dBconnection.createStatement();
+            st = dBconnection.createStatement();
             ResultSet rs = st.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='values';");
             if (rs.next())
             {
@@ -219,6 +246,17 @@ public class DB
         catch (Exception e)
         {
             e.printStackTrace();
+            try
+            {
+                if (st!= null && !st.isClosed())
+                {
+                    st.close();
+                }
+            }
+            catch (SQLException e1)
+            {
+                e1.printStackTrace();
+            }
             System.exit(0);
         }
     }
