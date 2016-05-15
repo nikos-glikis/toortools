@@ -15,13 +15,25 @@ public class DateTest
     @Test
     public void testDateDiffDays()
     {
-        Date start = new Date(25, 12, 4);
-        Date end = new Date(26, 12, 3);
+        //getDateDiff Date
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 1925);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 4);
+        Date start  = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 1926);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 3);
+        Date end = cal.getTime();
+
         Assert.assertEquals(DateHelper.getDateDiff(start, end, TimeUnit.DAYS), 364);
         Assert.assertEquals(DateHelper.getDateDiff(start, end, TimeUnit.HOURS), 8736);
         Assert.assertEquals(DateHelper.getDateDiff(start, end, TimeUnit.MINUTES), 524160);
         Assert.assertEquals(DateHelper.getDateDiff(start, end, TimeUnit.SECONDS), 31449600);
 
+        //getDateDiff Calendar
         Calendar startDate = Calendar.getInstance();
         startDate.set(Calendar.YEAR, 1925);
         startDate.set(Calendar.MONTH, 12);
@@ -36,6 +48,9 @@ public class DateTest
         Assert.assertEquals(DateHelper.getDateDiff(startDate, endDate, TimeUnit.HOURS), 8736);
         Assert.assertEquals(DateHelper.getDateDiff(startDate, endDate, TimeUnit.MINUTES), 524160);
         Assert.assertEquals(DateHelper.getDateDiff(startDate, endDate, TimeUnit.SECONDS), 31449600);
+
+        //addDaysToDate
+        Date date = new Date(25, 12, 4);
 
 
     }

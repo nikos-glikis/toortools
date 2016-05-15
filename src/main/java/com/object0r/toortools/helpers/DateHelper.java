@@ -14,7 +14,6 @@ public class DateHelper
     {
         DateTime startDateTime = new DateTime(startTime);
         DateTime endDateTime = new DateTime(endTime);
-
         return timeUnit.convert(endDateTime.getMillis() - startDateTime.getMillis(), TimeUnit.MILLISECONDS);
     }
 
@@ -22,7 +21,14 @@ public class DateHelper
     {
         DateTime startDateTime = new DateTime(startTime.getTime());
         DateTime endDateTime = new DateTime(endTime.getTime());
-
         return timeUnit.convert(endDateTime.getMillis() - startDateTime.getMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    public static Date addDaysToDate(Date date, int days)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        return cal.getTime();
     }
 }
