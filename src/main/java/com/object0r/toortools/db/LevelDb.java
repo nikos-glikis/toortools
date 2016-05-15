@@ -301,6 +301,58 @@ public class LevelDb extends AbstractKeyValueDatabase
                 for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
                     String key = asString(iterator.peekNext().getKey());
                     String value = asString(iterator.peekNext().getValue());
+                    pr.println(key);
+                    totalCount++;
+
+                }
+            } finally {
+                pr.close();
+                System.out.println("Total: " + totalCount);
+                iterator.close();
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportValuesToFile(String filename)
+    {
+        try {
+            int badCount=0, totalCount=0, found=0;
+            long max= 0;
+            PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
+            DBIterator iterator = db.iterator();
+            try {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+                    String key = asString(iterator.peekNext().getKey());
+                    String value = asString(iterator.peekNext().getValue());
+                    pr.println(value);
+                    totalCount++;
+
+                }
+            } finally {
+                pr.close();
+                System.out.println("Total: " + totalCount);
+                iterator.close();
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportToFile(String filename)
+    {
+        try {
+            int badCount=0, totalCount=0, found=0;
+            long max= 0;
+            PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
+            DBIterator iterator = db.iterator();
+            try {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+                    String key = asString(iterator.peekNext().getKey());
+                    String value = asString(iterator.peekNext().getValue());
                     pr.println(key + " - "+value);
                     totalCount++;
 

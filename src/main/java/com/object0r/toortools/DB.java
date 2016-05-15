@@ -97,6 +97,29 @@ public class DB
         {
             e.printStackTrace();
         }
+
+    }
+
+    public void exportToFile(String filename)
+    {
+        try
+        {
+
+            PrintWriter pr = new PrintWriter(filename);
+
+            HashMap<String, String> allBrands = this.getAll();
+            Statement st = dBconnection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT `key`,`value` FROM  `values` ");
+            while (rs.next())
+            {
+                pr.println(rs.getString(1)+" - " +rs.getString(2));
+            }
+            pr.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void exportValuesToFile(String filename)
