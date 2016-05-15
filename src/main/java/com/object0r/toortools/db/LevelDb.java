@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import static org.fusesource.leveldbjni.JniDBFactory.asString;
 import static org.fusesource.leveldbjni.JniDBFactory.bytes;
 import static org.fusesource.leveldbjni.JniDBFactory.factory;
@@ -22,6 +23,7 @@ public class LevelDb extends AbstractKeyValueDatabase
     DB db;
     String DATABASES_PATH = "dbs";
     String filename;
+
     public LevelDb(String filename)
     {
         this.filename = filename;
@@ -60,31 +62,35 @@ public class LevelDb extends AbstractKeyValueDatabase
     {
         try
         {
-            FileUtils.deleteDirectory(new File(DATABASES_PATH+"/"+filename));
+            FileUtils.deleteDirectory(new File(DATABASES_PATH + "/" + filename));
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
+
     public void deleteAll()
     {
         //TODO
     }
+
     void init(String filename)
     {
         try
         {
-            if (!new File(DATABASES_PATH+"/"+filename).isDirectory()) {
-                new File(DATABASES_PATH+"/"+filename).mkdirs();
+            if (!new File(DATABASES_PATH + "/" + filename).isDirectory())
+            {
+                new File(DATABASES_PATH + "/" + filename).mkdirs();
             }
             Options options = new Options();
 
             options.createIfMissing(true);
 
-            try {
+            try
+            {
 
-                this.db = factory.open(new File(DATABASES_PATH+"/"+filename), options);
+                this.db = factory.open(new File(DATABASES_PATH + "/" + filename), options);
 
                 // Use the db in here....
                     /*System.out.println("db test");
@@ -95,7 +101,9 @@ public class LevelDb extends AbstractKeyValueDatabase
                     System.out.println(value);
                     System.exit(0);*/
 
-            } finally {
+            }
+            finally
+            {
                 // Make sure you close the db to shutdown the
                 // database and avoid resource leaks.
                 //db.close();
@@ -127,18 +135,34 @@ public class LevelDb extends AbstractKeyValueDatabase
             int i = 1;
             iterator.seekToFirst();
             Map.Entry<byte[], byte[]> entry = iterator.next();
-            if (entry == null) {
+            if (entry == null)
+            {
                 throw new Exception("No value to pop.");
             }
             String key = asString(entry.getKey());
-            byte []value = (entry.getValue());
-            popValue = new  KeyValueDatabaseEntry<String, byte[]>(key , value);
+            byte[] value = (entry.getValue());
+            popValue = new KeyValueDatabaseEntry<String, byte[]>(key, value);
             delete(key);
-            try { iterator.close(); } catch (Exception e) { e.printStackTrace(); }
+            try
+            {
+                iterator.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
 
-        } finally
+        }
+        finally
         {
-            try { iterator.close(); } catch (Exception e) { e.printStackTrace(); }
+            try
+            {
+                iterator.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
         return popValue;
@@ -147,14 +171,14 @@ public class LevelDb extends AbstractKeyValueDatabase
     public String popValueAsString() throws Exception
     {
         Map.Entry<String, byte[]> popValue = pop();
-        Map.Entry<String,String> popValueString = new KeyValueDatabaseEntry<String,String>(popValue.getKey(), asString(popValue.getValue()));
+        Map.Entry<String, String> popValueString = new KeyValueDatabaseEntry<String, String>(popValue.getKey(), asString(popValue.getValue()));
         return popValueString.getValue();
     }
 
     public String popKeyAsString() throws Exception
     {
         Map.Entry<String, byte[]> popValue = pop();
-        Map.Entry<String,String> popValueString = new KeyValueDatabaseEntry<String,String>(popValue.getKey(), asString(popValue.getValue()));
+        Map.Entry<String, String> popValueString = new KeyValueDatabaseEntry<String, String>(popValue.getKey(), asString(popValue.getValue()));
         return popValueString.getKey();
     }
 
@@ -162,7 +186,8 @@ public class LevelDb extends AbstractKeyValueDatabase
     {
         return this.db.get(bytes(key.toLowerCase()));
     }
-    public  void close()
+
+    public void close()
     {
         try
         {
@@ -173,7 +198,8 @@ public class LevelDb extends AbstractKeyValueDatabase
             e.printStackTrace();
         }
     }
-    public  void delete(String key)
+
+    public void delete(String key)
     {
         try
         {
@@ -190,15 +216,16 @@ public class LevelDb extends AbstractKeyValueDatabase
         try
         {
             DBIterator iterator = db.iterator();
-            try {
+            try
+            {
                 int i = 1;
 
                 HashMap map = new HashMap();
-                for(iterator.seekToFirst(); iterator.hasNext(); iterator.next())
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next())
                 {
                     String key = asString(iterator.peekNext().getKey());
                     String value = asString(iterator.peekNext().getValue());
-                    map.put(key,value);
+                    map.put(key, value);
                     if (i++ % 100000 == 0)
                     {
                         destination.batchPut(map);
@@ -207,7 +234,9 @@ public class LevelDb extends AbstractKeyValueDatabase
                     }
                 }
                 destination.batchPut(map);
-            } finally {
+            }
+            finally
+            {
                 // Make sure you close the iterator to avoid resource leaks.
                 iterator.close();
             }
@@ -228,7 +257,7 @@ public class LevelDb extends AbstractKeyValueDatabase
     {
         DBIterator iterator = db.iterator();
         int i = 0;
-        for(iterator.seekToFirst(); iterator.hasNext(); iterator.next())
+        for (iterator.seekToFirst(); iterator.hasNext(); iterator.next())
         {
             i++;
         }
@@ -243,11 +272,12 @@ public class LevelDb extends AbstractKeyValueDatabase
         try
         {
 
-            String[] values = new String[map.size()*2];
+            String[] values = new String[map.size() * 2];
             Iterator it = map.entrySet().iterator();
-            int i = 0 ;
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
+            int i = 0;
+            while (it.hasNext())
+            {
+                Map.Entry pair = (Map.Entry) it.next();
                 //System.out.println(pair.getKey() + " = " + pair.getValue());
                 String key = pair.getKey().toString();
                 String value = pair.getValue().toString();
@@ -276,7 +306,7 @@ public class LevelDb extends AbstractKeyValueDatabase
         WriteBatch batch = db.createWriteBatch();
         try
         {
-            for (int i = 0; i<list.size(); i++)
+            for (int i = 0; i < list.size(); i++)
             {
                 String key = list.get(i);
                 batch.delete(key.toLowerCase().getBytes());
@@ -292,25 +322,31 @@ public class LevelDb extends AbstractKeyValueDatabase
 
     public void exportKeysToFile(String filename)
     {
-        try {
-            int badCount=0, totalCount=0, found=0;
-            long max= 0;
+        try
+        {
+            int badCount = 0, totalCount = 0, found = 0;
+            long max = 0;
             PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
             DBIterator iterator = db.iterator();
-            try {
-                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+            try
+            {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next())
+                {
                     String key = asString(iterator.peekNext().getKey());
                     String value = asString(iterator.peekNext().getValue());
                     pr.println(key);
                     totalCount++;
 
                 }
-            } finally {
+            }
+            finally
+            {
                 pr.close();
                 System.out.println("Total: " + totalCount);
                 iterator.close();
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -318,25 +354,31 @@ public class LevelDb extends AbstractKeyValueDatabase
 
     public void exportValuesToFile(String filename)
     {
-        try {
-            int badCount=0, totalCount=0, found=0;
-            long max= 0;
+        try
+        {
+            int badCount = 0, totalCount = 0, found = 0;
+            long max = 0;
             PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
             DBIterator iterator = db.iterator();
-            try {
-                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+            try
+            {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next())
+                {
                     String key = asString(iterator.peekNext().getKey());
                     String value = asString(iterator.peekNext().getValue());
                     pr.println(value);
                     totalCount++;
 
                 }
-            } finally {
+            }
+            finally
+            {
                 pr.close();
                 System.out.println("Total: " + totalCount);
                 iterator.close();
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -344,25 +386,31 @@ public class LevelDb extends AbstractKeyValueDatabase
 
     public void exportToFile(String filename)
     {
-        try {
-            int badCount=0, totalCount=0, found=0;
-            long max= 0;
+        try
+        {
+            int badCount = 0, totalCount = 0, found = 0;
+            long max = 0;
             PrintWriter pr = new PrintWriter(new FileOutputStream(filename));
             DBIterator iterator = db.iterator();
-            try {
-                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+            try
+            {
+                for (iterator.seekToFirst(); iterator.hasNext(); iterator.next())
+                {
                     String key = asString(iterator.peekNext().getKey());
                     String value = asString(iterator.peekNext().getValue());
-                    pr.println(key + " - "+value);
+                    pr.println(key + " - " + value);
                     totalCount++;
 
                 }
-            } finally {
+            }
+            finally
+            {
                 pr.close();
                 System.out.println("Total: " + totalCount);
                 iterator.close();
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }

@@ -15,8 +15,7 @@ public class RecurringProcessHelper
     static String defaultStateDirectory = "_state";
     static String pidF = "pid";
     static String timeF = "time";
-    final static  int SLEEP_BETWEEN_WRITES_SECONDS = 10;
-
+    final static int SLEEP_BETWEEN_WRITES_SECONDS = 10;
 
 
     public static void checkAndRun()
@@ -39,29 +38,29 @@ public class RecurringProcessHelper
         markAsRunningThread(session, stateDirectory);
     }
 
-    public  static boolean checkIfRunning()
+    public static boolean checkIfRunning()
     {
         return checkIfRunning(defaultSession, defaultStateDirectory);
     }
 
-    public  static boolean checkIfRunning(String session)
+    public static boolean checkIfRunning(String session)
     {
         return checkIfRunning(session, defaultStateDirectory);
     }
 
-    public  static boolean checkIfRunning(String session, String stateDirectory)
+    public static boolean checkIfRunning(String session, String stateDirectory)
     {
         try
         {
-            if (!new File(stateDirectory+"/"+session+"/").exists() || !new File(stateDirectory+"/"+session+"/").isDirectory())
+            if (!new File(stateDirectory + "/" + session + "/").exists() || !new File(stateDirectory + "/" + session + "/").isDirectory())
             {
                 return false;
             }
             else
             {
-                String pidFile = stateDirectory+"/"+session+"/"+pidF;
-                String timeFile = stateDirectory+"/"+session+"/"+timeF;
-                if (!new File(pidFile).exists() ||  !new File(timeFile).exists())
+                String pidFile = stateDirectory + "/" + session + "/" + pidF;
+                String timeFile = stateDirectory + "/" + session + "/" + timeF;
+                if (!new File(pidFile).exists() || !new File(timeFile).exists())
                 {
                     return false;
                 }
@@ -93,7 +92,7 @@ public class RecurringProcessHelper
                             }
                             else
                             {
-                                if (timestamp+ SLEEP_BETWEEN_WRITES_SECONDS*5 > OsHelper.getTimestampSeconds())
+                                if (timestamp + SLEEP_BETWEEN_WRITES_SECONDS * 5 > OsHelper.getTimestampSeconds())
                                 {
                                     return true;
                                 }
@@ -125,12 +124,12 @@ public class RecurringProcessHelper
 
 
     //Mark as running.
-    public  static void markAsRunning()
+    public static void markAsRunning()
     {
         markAsRunning(defaultSession, defaultStateDirectory);
     }
 
-    public  static void markAsRunning(String session)
+    public static void markAsRunning(String session)
     {
         markAsRunning(session, defaultStateDirectory);
     }
@@ -151,12 +150,12 @@ public class RecurringProcessHelper
         {
             public void run()
             {
-                while(true)
+                while (true)
                 {
                     try
                     {
                         markAsRunning(session, stateDirectory);
-                        Thread.sleep(SLEEP_BETWEEN_WRITES_SECONDS*1000);
+                        Thread.sleep(SLEEP_BETWEEN_WRITES_SECONDS * 1000);
                     }
                     catch (Exception e)
                     {
@@ -166,7 +165,13 @@ public class RecurringProcessHelper
             }
         }.start();
 
-        try { Thread.sleep(2000); } catch (Exception e) {}
+        try
+        {
+            Thread.sleep(2000);
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     public static void markAsRunning(String session, String stateDirectory)
@@ -176,7 +181,7 @@ public class RecurringProcessHelper
             long pid = getPid();
 
             //System.out.println("Pid is: " + pid);
-            String directory = stateDirectory+"/"+session+"/";
+            String directory = stateDirectory + "/" + session + "/";
             if (new File(directory).exists() && !new File(directory).isDirectory())
             {
                 System.out.println("pid file exists but not a directory");
@@ -188,11 +193,11 @@ public class RecurringProcessHelper
                 new File(directory).mkdirs();
             }
 
-            PrintWriter pr = new PrintWriter(directory+pidF);
+            PrintWriter pr = new PrintWriter(directory + pidF);
             pr.print(pid);
             pr.close();
 
-            pr = new PrintWriter(directory+timeF);
+            pr = new PrintWriter(directory + timeF);
             pr.print(OsHelper.getTimestampSeconds());
             pr.close();
 
@@ -205,13 +210,14 @@ public class RecurringProcessHelper
 
     public static void exitAfterSeconds(final long sleepSeconds)
     {
-        new Thread(){
+        new Thread()
+        {
             public void run()
             {
                 try
                 {
-                    Thread.sleep(sleepSeconds*1000);
-                    System.out.println("Exiting because "+sleepSeconds+" have passed.");
+                    Thread.sleep(sleepSeconds * 1000);
+                    System.out.println("Exiting because " + sleepSeconds + " have passed.");
                     System.exit(0);
                 }
                 catch (Exception e)
@@ -219,7 +225,8 @@ public class RecurringProcessHelper
                     e.printStackTrace();
                 }
             }
-        }.start();;
+        }.start();
+        ;
     }
 
     public static long getPid() throws Exception
@@ -231,14 +238,18 @@ public class RecurringProcessHelper
         final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         final int index = jvmName.indexOf('@');
 
-        if (index < 1) {
+        if (index < 1)
+        {
             // part before '@' empty (index = 0) / '@' not found (index = -1)
             throw new Exception("Error with pid detection");
         }
 
-        try {
+        try
+        {
             return Long.parseLong(jvmName.substring(0, index));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             // ignore
             throw new Exception("Error with pid detection");
         }

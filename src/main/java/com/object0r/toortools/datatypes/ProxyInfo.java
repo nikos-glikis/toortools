@@ -64,6 +64,6 @@ public class ProxyInfo
 
     public String toString()
     {
-        return host + ":"+port+"/"+type;
+        return host + ":" + port + "/" + type;
     }
 }
