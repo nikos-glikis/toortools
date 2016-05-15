@@ -50,7 +50,20 @@ public class DateTest
         Assert.assertEquals(DateHelper.getDateDiff(startDate, endDate, TimeUnit.SECONDS), 31449600);
 
         //addDaysToDate
-        Date date = new Date(25, 12, 4);
+        cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 1925);
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 4);
+
+        Date date = cal.getTime();
+
+        Date dateAfter2Days = DateHelper.addDaysToDate(date, 372);
+
+/*        Assert.assertEquals(dateAfter2Days.getYear(),26);
+        Assert.assertEquals(dateAfter2Days.getMonth(),11);
+        Assert.assertEquals(dateAfter2Days.getDay(),6);
+        System.out.println(dateAfter2Days);
+        System.out.println(date);*/
 
 
     }
