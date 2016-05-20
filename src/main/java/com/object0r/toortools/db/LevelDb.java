@@ -126,6 +126,11 @@ public class LevelDb extends AbstractKeyValueDatabase
         return asString(get(key.toLowerCase()));
     }
 
+    public DBIterator getIterator()
+    {
+        return db.iterator();
+    }
+
     public Map.Entry<String, byte[]> pop() throws Exception
     {
         DBIterator iterator = db.iterator();
