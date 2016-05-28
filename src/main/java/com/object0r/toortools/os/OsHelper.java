@@ -243,7 +243,7 @@ public class OsHelper
      * tasklist | findstr /c:" 56 " for windows
      *
      * @param pid
-     * @returns Windows: conhost.exe                   5652 Console                    1      5.500 K
+     * @return Windows: conhost.exe                   5652 Console                    1      5.500 K
      * Linux:
      */
     public static String getPidInformationLine(int pid)

@@ -20,7 +20,7 @@ public class TorHelper
     /**
      * Sets the Tor proxy settings. In case of error (or if the external ip doesn't change) false is returned.
      * @param dieOnError - If true, when the ip doesn't change it then the system exits.
-     * @return
+     * @return Returns true if the Torify was simple false otherwise.
      */
     public static boolean torifySimple(boolean dieOnError)
     {

@@ -29,7 +29,7 @@ import java.util.*;
 public class SimpleFTP {
 
 
-    /**
+    /*
      * Create an instance of SimpleFTP.
      */
     public SimpleFTP() {
@@ -37,7 +37,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Connects to the default port of an FTP server and logs in as
      * anonymous/anonymous.
      */
@@ -46,7 +46,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Connects to an FTP server and logs in as anonymous/anonymous.
      */
     public synchronized void connect(String host, int port) throws IOException {
@@ -54,7 +54,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Connects to an FTP server and logs in with the supplied username
      * and password.
      */
@@ -108,7 +108,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Disconnects from the FTP server.
      */
     public synchronized void disconnect() throws IOException {
@@ -121,7 +121,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Returns the working directory of the FTP server it is connected to.
      */
     public synchronized String pwd() throws IOException {
@@ -139,7 +139,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Changes the working directory (like cd). Returns true if successful.
      */
     public synchronized boolean cwd(String dir) throws IOException {
@@ -149,7 +149,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Sends a file to be stored on the FTP server.
      * Returns true if the file transfer was successful.
      * The file is sent in passive mode to avoid NAT or firewall problems
@@ -166,7 +166,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Sends a file to be stored on the FTP server.
      * Returns true if the file transfer was successful.
      * The file is sent in passive mode to avoid NAT or firewall problems
@@ -223,7 +223,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Enter binary mode for sending binary files.
      */
     public synchronized boolean bin() throws IOException {
@@ -233,7 +233,7 @@ public class SimpleFTP {
     }
 
 
-    /**
+    /*
      * Enter ASCII mode for sending text files. This is usually the default
      * mode. Make sure you use binary mode if you are sending images or
      * other binary data, as ASCII mode is likely to corrupt them.

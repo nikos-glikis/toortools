@@ -26,8 +26,9 @@ public class DateHelper
 
     public static Date addDaysToDate(Date date, int days)
     {
+        Date d = new Date(date.getTime());
         Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
+        cal.setTime(d);
         cal.add(Calendar.DATE, days); //minus number would decrement the days
         return cal.getTime();
     }
