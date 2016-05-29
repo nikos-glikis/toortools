@@ -11,7 +11,7 @@ public class SendEmailHelper
      * @param subject
      * @param body
      */
-    public void sendEmail(String to, String subject, String body)
+    public static void sendEmail(String to, String subject, String body)
     {
         try
         {
