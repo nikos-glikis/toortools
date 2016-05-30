@@ -16,9 +16,13 @@ public class SendEmailHelper
     {
         try
         {
-            OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput("echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"")+"\" \""+to+"\"");
-            System.out.println(osCommandOutput.getStandardOutput());
-            System.out.println(osCommandOutput.getErrorOutput());
+            String[] cmd = {
+                    "/bin/sh",
+                    "-c",
+                    "echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"")+"\" \""+to+"\""
+            };
+            Process p = Runtime.getRuntime().exec(cmd);
+            //p.waitFor();
         }
         catch (Exception e)
         {
