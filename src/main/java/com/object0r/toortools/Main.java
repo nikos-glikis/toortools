@@ -2,10 +2,7 @@ package com.object0r.toortools;
 
 import com.object0r.toortools.os.OsHelper;
 import com.object0r.toortools.os.RecurringProcessHelper;
-import com.object0r.toortools.tor.TorHelper;
-import it.sauronsoftware.ftp4j.FTPClient;
 
-import java.net.Proxy;
 
 public class Main
 {

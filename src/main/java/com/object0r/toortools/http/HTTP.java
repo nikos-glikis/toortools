@@ -10,133 +10,19 @@ import java.util.*;
 
 /**
  * @author Nikos Glikis
+ * @deprecated - Use HttpHelper instead
  */
 public class HTTP
 {
+    /**
+     * Makes the actual http request.
+     * @deprecated - Use HttpHelper.request() instead
+     * @param httpRequestInformation - The object containing the http request parameters.
+     * @return The http result.
+     * @throws Exception
+     */
     public static HttpResult request(HttpRequestInformation httpRequestInformation) throws Exception
     {
-        URL url;
-        HttpURLConnection connection = null;
-        try
-        {
-            // Create connection
-            url = new URL(httpRequestInformation.getUrl());
-            connection = (HttpURLConnection) url.openConnection(httpRequestInformation.getProxy());
-
-            Iterator it = httpRequestInformation.getHeaders().entrySet().iterator();
-            while (it.hasNext())
-            {
-                Map.Entry<String, String> pair = (Map.Entry<String, String>)it.next();
-                connection.setRequestProperty(pair.getKey(), pair.getValue());
-                it.remove();
-            }
-
-            //TODO maybe put below in helper.
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            if (httpRequestInformation.hasTimeOut())
-            {
-                connection.setReadTimeout(httpRequestInformation.getTimeoutSeconds()*1000);
-                connection.setReadTimeout(httpRequestInformation.getTimeoutSeconds()*1000);
-            }
-
-            if (httpRequestInformation.isMethodPost())
-            {
-                connection.setRequestMethod("POST");
-                if (!httpRequestInformation.hasHeader("Content-Type"))
-                {
-                    connection.setRequestProperty("Content-Type",
-                            "application/x-www-form-urlencoded");
-                    connection.setRequestProperty("Content-Length", ""
-                            + Integer.toString(httpRequestInformation.getBody().getBytes().length));
-                    connection.setUseCaches(false);
-                    connection.setDoInput(true);
-                    connection.setDoOutput(true);
-                    // Send request
-                    DataOutputStream wr = new DataOutputStream(connection
-                            .getOutputStream());
-                    wr.writeBytes(httpRequestInformation.getBody());
-                    wr.flush();
-                    wr.close();
-                }
-                else
-                {
-                    connection.setRequestProperty("Content-Type",
-                            httpRequestInformation.getHeader("Content-Type"));
-                }
-            }
-            else
-            {
-                connection.setRequestMethod(httpRequestInformation.getMethod());
-            }
-
-            if (httpRequestInformation.isFollowRedirects())
-            {
-                connection.setInstanceFollowRedirects(true);
-            }
-            else
-            {
-                connection.setInstanceFollowRedirects(false);
-            }
-            InputStream is = connection.getInputStream();
-            byte[] bytes = IOUtils.toByteArray(is);
-
-            HttpResult httpResult = new HttpResult();
-            httpResult.setContent(bytes);
-
-            if (connection.getErrorStream()!=null)
-            {
-                is = connection.getErrorStream();
-                bytes = IOUtils.toByteArray(is);
-                httpResult.setErrorContent(bytes);
-                System.out.println(new String(bytes));
-            }
-
-
-            Map<String,List<String>> map = connection.getHeaderFields();
-            for (Map.Entry<String, List<String>> entry : map.entrySet())
-            {
-                if (entry.getKey() != null)
-                {
-                    List<String> l = entry.getValue();
-                    Iterator<String> iter = l.iterator();
-                    for (String c : l)
-                    {
-                        httpResult.addHeader(entry.getKey(), c);
-                        //cookies += c +"; ";
-                    }
-                }
-            }
-
-            return httpResult;
-
-        }
-        catch (Exception e)
-        {
-            /*            if (connection.getErrorStream()!=null)
-            {*/
-/*            InputStream is = connection.getErrorStream();
-            byte[] bytes = IOUtils.toByteArray(is);
-            //httpResult.setErrorContent(bytes);
-            System.out.println(new String(bytes));*/
-            //          }
-            try
-            {
-                connection.disconnect();
-            }
-            catch (Exception ee)
-            {
-
-            }
-
-
-            throw e;
-
-        } finally {
-
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
+        return HttpHelper.request(httpRequestInformation);
     }
 }
