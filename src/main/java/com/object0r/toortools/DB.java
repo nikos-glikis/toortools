@@ -1,15 +1,14 @@
 package com.object0r.toortools;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 public class DB
 {
+    //TODO extend AbstractKeyValueDatabase
     private final String dbName;
     Connection dBconnection, dBconnection2;
     private String SESSION_NAME;

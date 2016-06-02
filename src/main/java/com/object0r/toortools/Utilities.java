@@ -52,7 +52,6 @@ public class Utilities
     public static void downloadFile(String url, String outputPath) throws Exception
     {
         downloadFile(url, outputPath, true);
-
     }
 
     public static void downloadFile(String url, String outputPath, boolean createIfNotExists) throws Exception
