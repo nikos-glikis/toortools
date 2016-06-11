@@ -66,22 +66,6 @@ If you want to use it in a maven project you will have to install the jar in the
     mvn install:install-file  -DgroupId=com.object0r -DartifactId=toortools -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/toortools-1.0.2-jar-with-dependencies.jar
 
 To use it add below in your pom.xml:    
-   
-Repository:
-   
-    <repositories>
-            <repository>
-                <releases>
-                    <enabled>true</enabled>
-                    <updatePolicy>always</updatePolicy>
-                    <checksumPolicy>ignore</checksumPolicy>
-                </releases>
-                <id>Object0r</id>
-                <name>Object0r</name>
-                <url>http://maven2.object0r.com/</url>
-                <layout>default</layout>
-            </repository>
-        </repositories>
         
  Dependency:
  
