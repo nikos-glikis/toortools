@@ -70,7 +70,7 @@ To use it add below in your pom.xml:
  Dependency:
  
                 <dependency>
-                    <groupId>com.object0r</groupId>
+                    <groupId>com.object0r.toortools</groupId>
                     <artifactId>toortools</artifactId>
                     <version>1.0.2</version>
                 </dependency>
