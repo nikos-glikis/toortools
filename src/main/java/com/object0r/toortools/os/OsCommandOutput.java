@@ -5,10 +5,25 @@ public class OsCommandOutput
 {
     String standardOutput;
     String errorOutput;
+    int exitCode;
     public OsCommandOutput(String s, String e)
     {
         this.standardOutput = s;
         this.errorOutput = e;
+    }
+    public OsCommandOutput()
+    {
+
+    }
+
+    public int getExitCode()
+    {
+        return exitCode;
+    }
+
+    public void setExitCode(int exitCode)
+    {
+        this.exitCode = exitCode;
     }
 
     public String getStandardOutput()

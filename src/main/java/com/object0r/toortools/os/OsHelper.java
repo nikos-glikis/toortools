@@ -1,5 +1,9 @@
 package com.object0r.toortools.os;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import org.apache.commons.exec.*;
 
 import java.io.*;
@@ -64,6 +68,74 @@ public class OsHelper
             e2.setStackTrace(e.getStackTrace());
             throw e2;
         }
+    }
+
+    public static OsCommandOutput runRemoteCommand(String ip, String command, String  user, String directory, String privateKeyPath) throws Exception
+    {
+        OsCommandOutput osCommandOutput = new OsCommandOutput();
+        String remoteCommand = "";
+
+        if (directory != null)
+        {
+
+            remoteCommand += "cd " + directory + " ; ";
+        }
+        remoteCommand += command;
+
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(user, ip, 22);
+
+        java.util.Properties config = new java.util.Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+
+        jsch.addIdentity(privateKeyPath);
+        session.connect();
+        Channel channel = session.openChannel("exec");
+        ((ChannelExec) channel).setCommand(remoteCommand);
+
+        channel.setInputStream(null);
+
+        ((ChannelExec) channel).setErrStream(System.err);
+
+        InputStream in = channel.getInputStream();
+
+        channel.connect();
+
+        byte[] tmp = new byte[1024];
+        StringBuffer outputSb = new StringBuffer();
+
+        while (true)
+        {
+            while (in.available() > 0)
+            {
+                int i = in.read(tmp, 0, 1024);
+                if (i < 0) break;
+                //System.out.print(new String(tmp, 0, i));
+                outputSb.append(new String(tmp, 0, i));
+            }
+            if (channel.isClosed())
+            {
+                if (in.available() > 0) continue;
+                osCommandOutput.setExitCode(channel.getExitStatus());
+                osCommandOutput.setErrorOutput(outputSb.toString());
+                //System.out.println("exit-status: " + channel.getExitStatus());
+                break;
+            }
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch (Exception ee)
+            {
+            }
+        }
+        channel.disconnect();
+        session.disconnect();
+
+        osCommandOutput.setExitCode(0);
+        osCommandOutput.setErrorOutput(outputSb.toString());
+        return osCommandOutput;
     }
 
     public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception
