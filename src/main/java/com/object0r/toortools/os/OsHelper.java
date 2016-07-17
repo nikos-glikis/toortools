@@ -262,8 +262,8 @@ public class OsHelper
      * Returns a list of all files in that folder.
      * Doesn't return folders.
      *
-     * @param folder
-     * @return
+     * @param folder the folder to get the files
+     * @return A vector with all files
      */
     public static Vector<String> getFoldersFilesRecursiveOld(File folder)
     {
