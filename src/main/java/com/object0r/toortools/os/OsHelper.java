@@ -117,9 +117,16 @@ public class OsHelper
             if (channel.isClosed())
             {
                 if (in.available() > 0) continue;
-                osCommandOutput.setExitCode(channel.getExitStatus());
-                osCommandOutput.setErrorOutput(outputSb.toString());
-                //System.out.println("exit-status: " + channel.getExitStatus());
+                int exitStatus = channel.getExitStatus();
+                osCommandOutput.setExitCode(exitStatus);
+                if (exitStatus == 0)
+                {
+                    osCommandOutput.setStandardOutput(outputSb.toString());
+                }
+                else
+                {
+                    osCommandOutput.setErrorOutput(outputSb.toString());
+                }
                 break;
             }
             try

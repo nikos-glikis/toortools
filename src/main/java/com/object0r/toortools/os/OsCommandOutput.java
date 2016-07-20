@@ -6,6 +6,8 @@ public class OsCommandOutput
     String standardOutput;
     String errorOutput;
     int exitCode;
+
+
     public OsCommandOutput(String s, String e)
     {
         this.standardOutput = s;
@@ -14,6 +16,10 @@ public class OsCommandOutput
     public OsCommandOutput()
     {
 
+    }
+    public boolean hasError()
+    {
+        return exitCode != 0;
     }
 
     public int getExitCode()
