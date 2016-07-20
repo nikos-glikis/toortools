@@ -32,4 +32,9 @@ public class DateHelper
         cal.add(Calendar.DATE, days); //minus number would decrement the days
         return cal.getTime();
     }
+
+    public long getCurrentUnixTime()
+    {
+        return System.currentTimeMillis() / 1000L;
+    }
 }
