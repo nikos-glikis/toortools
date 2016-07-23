@@ -19,10 +19,10 @@ public class SendEmailHelper
             String[] cmd = {
                     "/bin/sh",
                     "-c",
-                    "echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"")+"\" \""+to+"\""
+                    "echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"").replace("\n","")+"\" \""+to+"\""
             };
             Process p = Runtime.getRuntime().exec(cmd);
-            System.out.println(cmd);
+            System.out.println(cmd[0]);
             //p.waitFor();
         }
         catch (Exception e)
