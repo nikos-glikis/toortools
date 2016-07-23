@@ -22,6 +22,7 @@ public class SendEmailHelper
                     "echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"")+"\" \""+to+"\""
             };
             Process p = Runtime.getRuntime().exec(cmd);
+            System.out.println(cmd);
             //p.waitFor();
         }
         catch (Exception e)
