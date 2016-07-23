@@ -33,6 +33,8 @@ Some things included:
 * Torify traffic (Windows and Linux)
 * Simple Send email using linux command line - similar to php's mail()
 * Run Remote ssh commands using private key and get output and error code (Similar to local commands)
+* One method call that detects if process already runs, useful for crons so that 2 processes don't run on top of each other. (RecurringProcessHelper.checkAndRun())
+
 
 Installation
 ------------
