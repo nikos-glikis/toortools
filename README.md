@@ -31,6 +31,8 @@ Some things included:
 * String to MD5
 * Get External Ip
 * Torify traffic (Windows and Linux)
+* Simple Send email using linux command line - similar to php's mail()
+* Run Remote ssh commands using private key and get output and error code (Similar to local commands)
 
 Installation
 ------------
