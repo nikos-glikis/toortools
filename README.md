@@ -3,9 +3,9 @@ toortools
 
 Collection of small tools and classes I regularly use in my projects. I also created wrappers for lots and lots of small snippets of code that I find my self googling all the time.
 
-It is created based on my needs and my programming style. I have tried to create it as parameterizable and static as possible.
+I created this library based on my needs and my programming style. I have tried to create it as parameterizable and static as possible.
 
-It is build as a maven project. That means that you must install it in your local repository before you use it, or build it as a jar. 
+The project is build as a maven project. That means that you must install it in your local repository before you use it, or build it as a jar. 
 
 .idea folder is included, this is not related to Java, but its the intellij files a cloned repository is ready for development.
 
@@ -30,11 +30,12 @@ Some things included:
 * Basic String manipulation
 * String to MD5
 * Get External Ip
-* Torify traffic (Windows and Linux)
+* Torify traffic (Pass all traffic of running java program through TOR for Windows and Linux)
 * Simple Send email using linux command line - similar to php's mail()
 * Run Remote ssh commands using private key and get output and error code (Similar to local commands)
 * One method call that detects if process already runs, useful for crons so that 2 processes don't run on top of each other. (RecurringProcessHelper.checkAndRun())
-
+* Easy automatic exit after x seconds.
+* Cyta SMS Api wrapper.
 
 Installation
 ------------
