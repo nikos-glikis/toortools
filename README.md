@@ -37,6 +37,11 @@ Some things included:
 * Easy automatic exit after x seconds.
 * Cyta SMS Api wrapper.
 
+Code Samples:
+-------------
+
+Some code samples can be found at the [wiki](https://github.com/nikos-glikis/toortools/wiki)
+
 Installation
 ------------
 
@@ -92,3 +97,5 @@ http://sysads.co.uk/2014/05/install-apache-maven-3-2-1-ubuntu-14-04/
     sudo gdebi maven3_3.2.1-0~ppa1_all.deb
     
     sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/maven
+    
+    
