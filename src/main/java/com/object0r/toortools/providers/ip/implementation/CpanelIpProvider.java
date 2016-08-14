@@ -22,7 +22,7 @@ public class CpanelIpProvider extends AbstractIpProvider
     {
         try
         {
-            String ip=   readUrl("http://cpanel.com/showip.shtml", proxy, connectTimeoutSeconds, readTimeoutSeconds);
+            String ip = readUrl("http://cpanel.com/showip.shtml", proxy, connectTimeoutSeconds, readTimeoutSeconds);
 
             if (isValidIp(ip))
             {
@@ -35,7 +35,7 @@ public class CpanelIpProvider extends AbstractIpProvider
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            //System.out.println(e);
             throw new InvalidProviderException(e.toString());
         }
     }

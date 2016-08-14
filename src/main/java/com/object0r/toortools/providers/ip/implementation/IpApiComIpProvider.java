@@ -45,7 +45,7 @@ public class IpApiComIpProvider extends AbstractIpProvider
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            //System.out.println(e);
             throw new InvalidProviderException(e.toString());
         }
     }

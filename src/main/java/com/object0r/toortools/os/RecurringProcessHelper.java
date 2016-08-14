@@ -156,6 +156,7 @@ public class RecurringProcessHelper
                     {
                         markAsRunning(session, stateDirectory);
                         Thread.sleep(SLEEP_BETWEEN_WRITES_SECONDS * 1000);
+                        System.out.println("Thread Count: " + java.lang.Thread.activeCount());
                     }
                     catch (Exception e)
                     {
