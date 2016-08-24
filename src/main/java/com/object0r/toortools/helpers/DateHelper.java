@@ -40,12 +40,12 @@ public class DateHelper
         return System.currentTimeMillis() / 1000L;
     }
 
-    String getMsDurationInHumanReadable(long ms)
+    public static  String getMsDurationInHumanReadable(long ms)
     {
         return getMsDurationInHumanReadable(ms, true, true);
     }
 
-    String getMsDurationInHumanReadable(long ms, boolean suppressLeadingZeroElements, boolean suppressTrailingZeroElements)
+    public static String getMsDurationInHumanReadable(long ms, boolean suppressLeadingZeroElements, boolean suppressTrailingZeroElements)
     {
         return DurationFormatUtils.formatDurationWords(ms, suppressLeadingZeroElements, suppressTrailingZeroElements);
     }
