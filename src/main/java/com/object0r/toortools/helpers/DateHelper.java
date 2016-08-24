@@ -1,9 +1,11 @@
 package com.object0r.toortools.helpers;
 
 
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -36,5 +38,15 @@ public class DateHelper
     public long getCurrentUnixTime()
     {
         return System.currentTimeMillis() / 1000L;
+    }
+
+    String getMsDurationInHumanReadable(long ms)
+    {
+        return getMsDurationInHumanReadable(ms, true, true);
+    }
+
+    String getMsDurationInHumanReadable(long ms, boolean suppressLeadingZeroElements, boolean suppressTrailingZeroElements)
+    {
+        return DurationFormatUtils.formatDurationWords(ms, suppressLeadingZeroElements, suppressTrailingZeroElements);
     }
 }

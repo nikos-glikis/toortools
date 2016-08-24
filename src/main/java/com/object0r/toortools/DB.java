@@ -1,9 +1,13 @@
 package com.object0r.toortools;
 
+import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class DB
@@ -25,7 +29,7 @@ public class DB
             Statement st = dBconnection.createStatement();
             try
             {
-                st.execute("INSERT INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
+                st.execute("INSERT OR IGNORE  INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
             }
             catch (Exception e)
             {
@@ -43,7 +47,7 @@ public class DB
             try
             {
 
-                st.execute("INSERT INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
+                st.execute("INSERT OR IGNORE  INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
 
             }
             catch (Exception e)
@@ -71,6 +75,41 @@ public class DB
             else
             {
                 System.exit(0);
+            }
+        }
+    }
+
+    public synchronized void batchPut(HashMap<String, String> values)
+    {
+        Statement st = null;
+        try
+        {
+            st = dBconnection.createStatement();
+            //TODO needs improovments
+
+            for (Map.Entry<String, String> value : values.entrySet())
+            {
+                st.execute("INSERT OR IGNORE  INTO `values` VALUES ('" + StringEscapeUtils.escapeSql(value.getKey()) + "', '" + StringEscapeUtils.escapeSql(value.getValue()) + "')");
+                st.execute("UPDATE `values` SET `value` = '" + StringEscapeUtils.escapeSql(value.getKey()) + "' WHERE  `key` = '" + StringEscapeUtils.escapeSql(value.getValue()) + "'");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        finally
+        {
+            try
+            {
+                if (st != null)
+                {
+                    st.close();
+                }
+            }
+            catch (Exception e)
+            {
+                //e.printStackTrace();
             }
         }
     }
@@ -111,7 +150,7 @@ public class DB
             ResultSet rs = st.executeQuery("SELECT `key`,`value` FROM  `values` ");
             while (rs.next())
             {
-                pr.println(rs.getString(1)+" - " +rs.getString(2));
+                pr.println(rs.getString(1) + " - " + rs.getString(2));
             }
             pr.close();
         }
