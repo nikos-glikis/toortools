@@ -70,7 +70,12 @@ public class OsHelper
         }
     }
 
-    public static OsCommandOutput runRemoteCommand(String ip, String command, String  user, String directory, String privateKeyPath) throws Exception
+    public static OsCommandOutput runRemoteCommand(String ip, String command, String user, String directory, String privateKeyPath) throws Exception
+    {
+        return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath);
+    }
+
+    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath) throws Exception
     {
         OsCommandOutput osCommandOutput = new OsCommandOutput();
         String remoteCommand = "";
@@ -83,7 +88,7 @@ public class OsHelper
         remoteCommand += command;
 
         JSch jsch = new JSch();
-        Session session = jsch.getSession(user, ip, 22);
+        Session session = jsch.getSession(user, ip, port);
 
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
