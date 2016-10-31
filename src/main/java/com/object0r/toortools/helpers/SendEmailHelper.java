@@ -29,16 +29,33 @@ public class SendEmailHelper
                 new File(tmpDir).mkdirs();
             }
             String tmpFile = tmpDir + RandomStringUtils.randomAlphanumeric(8);
-            Utilities.writeStringToFile(tmpFile, body);
+            sendEmail(to, subject, new File(tmpFile));
+            new File(tmpFile).delete();
+            //System.out.println(cmd[3]);
+            //p.waitFor();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendEmail(String to, String subject, File bodyFile)
+    {
+        try
+        {
+            if (!bodyFile.exists())
+            {
+                throw new Exception("File: " + bodyFile + " does not exist.");
+            }
             String[] cmd = {
                     "/bin/sh",
                     "-c",
                     //"echo \""+body.replace("\"","\\\"")+"\" | tee | mail -s \""+subject.replace("\"","\\\"").replace("\n"," ")+"\" \""+to+"\""
-                    "cat " + tmpFile + " | tee | mail -s \"" + subject.replace("\"", "\\\"").replace("\n", " ") + "\" \"" + to + "\""
+                    "cat " + bodyFile.getAbsolutePath() + " | tee | mail -s \"" + subject.replace("\"", "\\\"").replace("\n", " ") + "\" \"" + to + "\""
             };
             Process p = Runtime.getRuntime().exec(cmd);
             p.waitFor();
-            new File(tmpFile).delete();
             //System.out.println(cmd[3]);
             //p.waitFor();
         }
