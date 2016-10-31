@@ -29,6 +29,7 @@ public class SendEmailHelper
                 new File(tmpDir).mkdirs();
             }
             String tmpFile = tmpDir + RandomStringUtils.randomAlphanumeric(8);
+            Utilities.writeStringToFile(tmpFile, body);
             sendEmail(to, subject, new File(tmpFile));
             new File(tmpFile).delete();
             //System.out.println(cmd[3]);
