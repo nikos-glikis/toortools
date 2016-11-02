@@ -169,7 +169,7 @@ public class OsHelper
             //System.out.println("Here is the standard output of the command:\n");
             while ((s = stdInput.readLine()) != null)
             {
-                sb.append(s);
+                sb.append(s).append("\n");
                 //System.out.println(s);
             }
 
@@ -177,7 +177,7 @@ public class OsHelper
             //System.out.println("Here is the standard error of the command (if any):\n");
             while ((s = stdError.readLine()) != null)
             {
-                errorBuffer.append(s);
+                errorBuffer.append(s + "\n");
             }
 
             return new OsCommandOutput(sb.toString(), errorBuffer.toString());
