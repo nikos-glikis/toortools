@@ -42,7 +42,8 @@ public class Utilities
 
             c = DriverManager.getConnection("jdbc:sqlite:" + path);
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -127,7 +128,8 @@ public class Utilities
             if (!returnCookies)
             {
                 return response.toString();
-            } else
+            }
+            else
             {
                 String cookies = "";
                 Map<String, List<String>> map = connection.getHeaderFields();
@@ -147,20 +149,23 @@ public class Utilities
                 if (cookies.equals(""))
                 {
                     return null;
-                } else
+                }
+                else
                 {
                     return cookies;
                 }
             }
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
 
             e.printStackTrace();
             System.out.println("e");
             return null;
 
-        } finally
+        }
+        finally
         {
 
             if (connection != null)
@@ -206,7 +211,8 @@ public class Utilities
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ;
         }
@@ -252,7 +258,8 @@ public class Utilities
             IOUtils.copy(conn.getInputStream(), writer, encoding);
 
             return writer.toString();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             ReadUrlException readUrlException = new ReadUrlException(e.toString());
             readUrlException.setPrimaryException(e);
@@ -262,7 +269,8 @@ public class Utilities
                 try
                 {
                     readUrlException.setErrorOutput(IOUtils.toString(conn.getErrorStream(), encoding));
-                } catch (IOException e1)
+                }
+                catch (IOException e1)
                 {
                     e1.printStackTrace();
                 }
@@ -304,17 +312,17 @@ public class Utilities
         return Utilities.getIp(Proxy.NO_PROXY);
     }
 
-    public static  String getIp(Proxy proxy) throws Exception
+    public static String getIp(Proxy proxy) throws Exception
     {
         return getIp(proxy, 5, 15, 15);
     }
 
-    public static  String getIp(Proxy proxy, int maxTries, int connectTimeoutSeconds, int readTimeoutSeconds) throws Exception
+    public static String getIp(Proxy proxy, int maxTries, int connectTimeoutSeconds, int readTimeoutSeconds) throws Exception
     {
         Vector<IpProvider> ipProviders = IpProvidersHelper.getIpProviders();
         Collections.shuffle(ipProviders);
         int tries = 0;
-        for (IpProvider ipProvider: ipProviders)
+        for (IpProvider ipProvider : ipProviders)
         {
             try
             {
@@ -324,11 +332,18 @@ public class Utilities
             {
 
             }
-            if (tries++>maxTries)
+            if (tries++ > maxTries)
             {
                 break;
             }
         }
         throw new Exception("No valid ip providers found");
+    }
+
+    public static String getExceptionStackTraceString(Exception e)
+    {
+        StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        return errors.toString();
     }
 }
