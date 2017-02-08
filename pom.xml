@@ -6,7 +6,7 @@
 
     <groupId>com.object0r.toortools</groupId>
     <artifactId>toortools</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <name>toortools</name>
     <description>A collection of helpers and and datatypes for various tasks.</description>
