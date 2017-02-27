@@ -6,7 +6,7 @@
 
     <groupId>com.object0r.toortools</groupId>
     <artifactId>toortools</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <name>toortools</name>
     <description>A collection of helpers and and datatypes for various tasks.</description>
@@ -199,6 +199,6 @@
     <scm>
         <url>https://github.com/nikos-glikis/toortools</url>
         <connection>scm:git:git@github.com:nikos-glikis/toortools-http.git</connection>
-        <developerConnection>scm:git:git@github.com:nikos-glikis/toortools-http.gitt</developerConnection>
+        <developerConnection>scm:git:git@github.com:nikos-glikis/toortools-http.git</developerConnection>
     </scm>
 </project>
