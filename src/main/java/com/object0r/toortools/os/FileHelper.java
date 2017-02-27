@@ -1,8 +1,8 @@
 package com.object0r.toortools.os;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import org.apache.commons.codec.binary.Base64;
+
+import java.io.*;
 
 public class FileHelper
 {
@@ -22,5 +22,44 @@ public class FileHelper
             throw new FileNotFoundException("File does not exist. ");
         }
         return f.length();
+    }
+
+    public static String encodeFileToBase64Binary(String fileName) throws IOException
+    {
+
+        File file = new File(fileName);
+        byte[] bytes = getFileBytes(file);
+        byte[] encoded = Base64.encodeBase64(bytes);
+        String encodedString = new String(encoded);
+
+        return encodedString;
+    }
+
+    private static byte[] getFileBytes(File file) throws IOException
+    {
+        InputStream is = new FileInputStream(file);
+
+        long length = file.length();
+        if (length > Integer.MAX_VALUE)
+        {
+            // File is too large
+        }
+        byte[] bytes = new byte[(int) length];
+
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+        {
+            offset += numRead;
+        }
+
+        if (offset < bytes.length)
+        {
+            throw new IOException("Could not completely read file " + file.getName());
+        }
+
+        is.close();
+        return bytes;
     }
 }
