@@ -14,7 +14,7 @@ public class IpProvidersHelper
         {
             //TODO create tests for these.
             ipProviders = new Vector<IpProvider>();
-            ipProviders.add(new CpanelIpProvider());
+            //ipProviders.add(new CpanelIpProvider());
             ipProviders.add(new IcanhazipIpProvider());
             ipProviders.add(new IpifyIpProvider());
             ipProviders.add(new DuckduckgoIpProvider());
