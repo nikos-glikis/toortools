@@ -1,5 +1,6 @@
 package com.object0r.toortools;
 
+import com.object0r.toortools.db.LevelDb;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -340,6 +341,25 @@ public class DB
                 e1.printStackTrace();
             }
             System.exit(0);
+        }
+    }
+
+    public void exportToLevelDb(LevelDb levelDb)
+    {
+        try
+        {
+            Statement st = dBconnection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT `key`,`value` FROM  `values` ");
+            while (rs.next())
+            {
+                String key = rs.getString(1);
+                String value = rs.getString(2);
+                levelDb.put(key, value);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
