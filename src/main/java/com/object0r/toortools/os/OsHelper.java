@@ -105,7 +105,7 @@ public class OsHelper
 
         InputStream in = channel.getInputStream();
 
-        channel.connect();
+        channel.connect(60000);
 
         byte[] tmp = new byte[1024];
         StringBuffer outputSb = new StringBuffer();
