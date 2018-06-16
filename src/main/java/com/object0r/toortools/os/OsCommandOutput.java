@@ -13,10 +13,19 @@ public class OsCommandOutput
         this.standardOutput = s;
         this.errorOutput = e;
     }
+
+    public OsCommandOutput(String s, String e, int exitCode)
+    {
+        this.standardOutput = s;
+        this.errorOutput = e;
+        this.exitCode = exitCode;
+    }
+
     public OsCommandOutput()
     {
 
     }
+
     public boolean hasError()
     {
         return exitCode != 0;

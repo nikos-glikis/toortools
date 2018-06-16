@@ -115,13 +115,19 @@ public class OsHelper
             while (in.available() > 0)
             {
                 int i = in.read(tmp, 0, 1024);
-                if (i < 0) break;
+                if (i < 0)
+                {
+                    break;
+                }
                 //System.out.print(new String(tmp, 0, i));
                 outputSb.append(new String(tmp, 0, i));
             }
             if (channel.isClosed())
             {
-                if (in.available() > 0) continue;
+                if (in.available() > 0)
+                {
+                    continue;
+                }
                 int exitStatus = channel.getExitStatus();
                 osCommandOutput.setExitCode(exitStatus);
                 if (exitStatus == 0)
@@ -155,7 +161,10 @@ public class OsHelper
         try
         {
             String s = null;
+
+
             Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
 
             BufferedReader stdInput = new BufferedReader(new
                     InputStreamReader(p.getInputStream()));
@@ -180,7 +189,7 @@ public class OsHelper
                 errorBuffer.append(s + "\n");
             }
 
-            return new OsCommandOutput(sb.toString(), errorBuffer.toString());
+            return new OsCommandOutput(sb.toString(), errorBuffer.toString(), p.exitValue());
         }
         catch (Exception e)
         {
@@ -248,7 +257,10 @@ public class OsHelper
         File root = new File(path);
         File[] list = root.listFiles();
 
-        if (list == null) return listSoFar;
+        if (list == null)
+        {
+            return listSoFar;
+        }
 
         for (File f : list)
         {
