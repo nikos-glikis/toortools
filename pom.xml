@@ -6,7 +6,7 @@
 
     <groupId>com.object0r.toortools</groupId>
     <artifactId>toortools</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6-SNAPSHOT</version>
 
     <name>toortools</name>
     <description>A collection of helpers and and datatypes for various tasks.</description>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.object0r.toortools.http</groupId>
             <artifactId>toortools-http</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
