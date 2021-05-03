@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.object0r.toortools.http</groupId>
             <artifactId>toortools-http</artifactId>
-            <version>1.2</version>
+            <version>1.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
