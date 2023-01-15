@@ -140,18 +140,18 @@ public class OsHelper
                 }
                 break;
             }
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (Exception ee)
-            {
-            }
+//            try
+//            {
+//                Thread.sleep(1000);
+//            }
+//            catch (Exception ee)
+//            {
+//            }
         }
         channel.disconnect();
         session.disconnect();
 
-        osCommandOutput.setExitCode(0);
+        //osCommandOutput.setExitCode(0);
         osCommandOutput.setErrorOutput(outputSb.toString());
         return osCommandOutput;
     }
