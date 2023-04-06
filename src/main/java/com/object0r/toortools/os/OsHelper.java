@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Created by User on 25/4/2015.
  */
 public class OsHelper {
+    private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 5;
     static int OS_TYPES_UNKNOWN = 0;
     static int OS_TYPES_WINDOWS = 1;
     static int OS_TYPES_LINUX = 2;
@@ -62,7 +63,7 @@ public class OsHelper {
     }
 
     public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath) throws Exception {
-        return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath, 5);
+        return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
 
     public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int timeoutSeconds) throws Exception {
@@ -134,6 +135,21 @@ public class OsHelper {
         //osCommandOutput.setExitCode(0);
         osCommandOutput.setErrorOutput(outputSb.toString());
         return osCommandOutput;
+    }
+    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest) throws Exception {
+        return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
+    }
+    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest, int connectTimeoutSeconds) throws Exception {
+
+        for (int i = 0; i < retries; i++) {
+            try {
+                return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Thread.sleep(sleepMsPerRequest);
+            }
+        }
+        return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds);
     }
 
     public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception {
