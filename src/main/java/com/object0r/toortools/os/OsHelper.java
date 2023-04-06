@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Created by User on 25/4/2015.
  */
 public class OsHelper {
-    private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 5;
+    private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 15;
     static int OS_TYPES_UNKNOWN = 0;
     static int OS_TYPES_WINDOWS = 1;
     static int OS_TYPES_LINUX = 2;
