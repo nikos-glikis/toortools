@@ -9,8 +9,5 @@
         <module name="toortools" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MyUtils" target="1.6" />
-    </bytecodeTargetLevel>
   </component>
 </project>

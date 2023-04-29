@@ -71,7 +71,6 @@ public class OsHelper {
         String remoteCommand = "";
 
         if (directory != null) {
-
             remoteCommand += "cd " + directory + " ; ";
         }
         remoteCommand += command;
@@ -90,7 +89,9 @@ public class OsHelper {
 
         channel.setInputStream(null);
 
-        ((ChannelExec) channel).setErrStream(System.err);
+        // Create a ByteArrayOutputStream to capture the error output
+        ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();
+        ((ChannelExec) channel).setErrStream(errorOutput);
 
         InputStream in = channel.getInputStream();
 
@@ -105,7 +106,6 @@ public class OsHelper {
                 if (i < 0) {
                     break;
                 }
-                //System.out.print(new String(tmp, 0, i));
                 outputSb.append(new String(tmp, 0, i));
             }
             if (channel.isClosed()) {
@@ -116,26 +116,20 @@ public class OsHelper {
                 osCommandOutput.setExitCode(exitStatus);
                 if (exitStatus == 0) {
                     osCommandOutput.setStandardOutput(outputSb.toString());
-                } else {
+                } /*else {
                     osCommandOutput.setErrorOutput(outputSb.toString());
-                }
+                }*/
+                // When the channel is closed, convert the ByteArrayOutputStream to a string and set it as the error output
+                osCommandOutput.setErrorOutput(errorOutput.toString());
                 break;
             }
-//            try
-//            {
-//                Thread.sleep(1000);
-//            }
-//            catch (Exception ee)
-//            {
-//            }
         }
         channel.disconnect();
         session.disconnect();
 
-        //osCommandOutput.setExitCode(0);
-        osCommandOutput.setErrorOutput(outputSb.toString());
         return osCommandOutput;
     }
+
     public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest) throws Exception {
         return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
