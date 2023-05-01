@@ -15,42 +15,55 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by User on 25/4/2015.
  */
-public class OsHelper {
+public class OsHelper
+{
     private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 15;
     static int OS_TYPES_UNKNOWN = 0;
     static int OS_TYPES_WINDOWS = 1;
     static int OS_TYPES_LINUX = 2;
 
-    static int getOs() {
+    static int getOs()
+    {
         String os = System.getProperty("os.name");
 
-        if (os.indexOf("Windows") > -1) {
+        if (os.indexOf("Windows") > -1)
+        {
             return OS_TYPES_WINDOWS;
-        } else if (os.indexOf("Linux") > -1) {
+        }
+        else if (os.indexOf("Linux") > -1)
+        {
 
             return OS_TYPES_LINUX;
-        } else {
+        }
+        else
+        {
             return OS_TYPES_UNKNOWN;
         }
     }
 
-    public static boolean isWindows() {
+    public static boolean isWindows()
+    {
         return OsHelper.getOs() == OS_TYPES_WINDOWS;
     }
 
-    public static boolean isLinux() {
+    public static boolean isLinux()
+    {
         return OsHelper.getOs() == OS_TYPES_LINUX;
     }
 
-    public static boolean runCommand(String command) throws Exception {
-        try {
+    public static boolean runCommand(String command) throws Exception
+    {
+        try
+        {
             String s = null;
             //System.out.println(command);
             Process p = Runtime.getRuntime().exec(command);
 
             return true;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Exception e2 = new Exception("Some error happened when trying to run the command.");
             e.printStackTrace();
             e2.setStackTrace(e.getStackTrace());
@@ -58,19 +71,23 @@ public class OsHelper {
         }
     }
 
-    public static OsCommandOutput runRemoteCommand(String ip, String command, String user, String directory, String privateKeyPath) throws Exception {
+    public static OsCommandOutput runRemoteCommand(String ip, String command, String user, String directory, String privateKeyPath) throws Exception
+    {
         return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath);
     }
 
-    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath) throws Exception {
+    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath) throws Exception
+    {
         return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
 
-    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int timeoutSeconds) throws Exception {
+    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int timeoutSeconds) throws Exception
+    {
         OsCommandOutput osCommandOutput = new OsCommandOutput();
         String remoteCommand = "";
 
-        if (directory != null) {
+        if (directory != null)
+        {
             remoteCommand += "cd " + directory + " ; ";
         }
         remoteCommand += command;
@@ -100,21 +117,27 @@ public class OsHelper {
         byte[] tmp = new byte[1024];
         StringBuffer outputSb = new StringBuffer();
 
-        while (true) {
-            while (in.available() > 0) {
+        while (true)
+        {
+            while (in.available() > 0)
+            {
                 int i = in.read(tmp, 0, 1024);
-                if (i < 0) {
+                if (i < 0)
+                {
                     break;
                 }
                 outputSb.append(new String(tmp, 0, i));
             }
-            if (channel.isClosed()) {
-                if (in.available() > 0) {
+            if (channel.isClosed())
+            {
+                if (in.available() > 0)
+                {
                     continue;
                 }
                 int exitStatus = channel.getExitStatus();
                 osCommandOutput.setExitCode(exitStatus);
-                if (exitStatus == 0) {
+                if (exitStatus == 0)
+                {
                     osCommandOutput.setStandardOutput(outputSb.toString());
                 } /*else {
                     osCommandOutput.setErrorOutput(outputSb.toString());
@@ -130,15 +153,22 @@ public class OsHelper {
         return osCommandOutput;
     }
 
-    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest) throws Exception {
+    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest) throws Exception
+    {
         return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
-    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest, int connectTimeoutSeconds) throws Exception {
 
-        for (int i = 0; i < retries; i++) {
-            try {
+    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest, int connectTimeoutSeconds) throws Exception
+    {
+
+        for (int i = 0; i < retries; i++)
+        {
+            try
+            {
                 return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
                 Thread.sleep(sleepMsPerRequest);
             }
@@ -146,12 +176,31 @@ public class OsHelper {
         return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds);
     }
 
-    public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception {
-        try {
+    public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception
+    {
+        return runCommandAndGetOutput(command, false);
+    }
+
+    public static OsCommandOutput runCommandAndGetOutput(String command, boolean useBash) throws Exception
+    {
+        try
+        {
             String s = null;
 
-
-            Process p = Runtime.getRuntime().exec(command);
+            Process p = null;
+            if (useBash)
+            {
+                String[] cmd = {
+                        "/bin/sh",
+                        "-c",
+                        command
+                };
+                p = Runtime.getRuntime().exec(cmd);
+            }
+            else
+            {
+                p = Runtime.getRuntime().exec(command);
+            }
             p.waitFor();
 
             BufferedReader stdInput = new BufferedReader(new
@@ -164,19 +213,23 @@ public class OsHelper {
             StringBuilder sb = new StringBuilder();
             StringBuilder errorBuffer = new StringBuilder();
             //System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdInput.readLine()) != null) {
+            while ((s = stdInput.readLine()) != null)
+            {
                 sb.append(s).append("\n");
                 //System.out.println(s);
             }
 
             // read any errors from the attempted command
             //System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
+            while ((s = stdError.readLine()) != null)
+            {
                 errorBuffer.append(s + "\n");
             }
 
             return new OsCommandOutput(sb.toString(), errorBuffer.toString(), p.exitValue());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Exception e2 = new Exception("Some error happened when trying to run the command.");
             e2.setStackTrace(e.getStackTrace());
             throw e2;
@@ -184,10 +237,54 @@ public class OsHelper {
     }
 
 
-    public static void deleteFolderContentsRecursive(File folder) throws Exception {
+    public static OsCommandOutput runCommandAndGetOutputBash(String command) throws Exception
+    {
+        try
+        {
+            String s = null;
+            String[] cmd = {
+                    "/bin/sh",
+                    "-c",
+                    command
+            };
+
+            Process p = Runtime.getRuntime().exec(cmd);
+            p.waitFor();
+
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(p.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(p.getErrorStream()));
+
+            StringBuilder sb = new StringBuilder();
+            StringBuilder errorBuffer = new StringBuilder();
+            while ((s = stdInput.readLine()) != null)
+            {
+                sb.append(s).append("\n");
+            }
+
+            while ((s = stdError.readLine()) != null)
+            {
+                errorBuffer.append(s + "\n");
+            }
+
+            return new OsCommandOutput(sb.toString(), errorBuffer.toString(), p.exitValue());
+        }
+        catch (Exception e)
+        {
+            Exception e2 = new Exception("Some error happened when trying to run the command.");
+            e2.setStackTrace(e.getStackTrace());
+            throw e2;
+        }
+    }
+
+    public static void deleteFolderContentsRecursive(File folder) throws Exception
+    {
         Vector<String> filenames = getDirectoryContents(folder.getAbsolutePath(), true);
 
-        for (String filename : filenames) {
+        for (String filename : filenames)
+        {
             new File(filename).delete();
         }
     }
@@ -198,51 +295,65 @@ public class OsHelper {
      * @param folder
      * @throws Exception
      */
-    public static void deleteFolderContentsRecursive(File folder, boolean includeDirectories) throws Exception {
+    public static void deleteFolderContentsRecursive(File folder, boolean includeDirectories) throws Exception
+    {
         Vector<String> filenames = getDirectoryContents(folder.getAbsolutePath(), includeDirectories);
 
-        for (String filename : filenames) {
+        for (String filename : filenames)
+        {
             new File(filename).delete();
         }
     }
 
-    public static long getTimestampSeconds() {
+    public static long getTimestampSeconds()
+    {
         return getTimestamp();
     }
 
-    public static long getTimestamp() {
+    public static long getTimestamp()
+    {
         Calendar calendar = Calendar.getInstance();
         return calendar.getTimeInMillis() / 1000;
     }
 
 
-    static public Vector<String> getFoldersFilesRecursive(String path) {
+    static public Vector<String> getFoldersFilesRecursive(String path)
+    {
         return getDirectoryContents(path, true, new Vector<String>());
     }
 
-    static public Vector<String> getDirectoryContents(String path, boolean includeDirectories) {
+    static public Vector<String> getDirectoryContents(String path, boolean includeDirectories)
+    {
         return getDirectoryContents(path, includeDirectories, new Vector<String>());
     }
 
-    static private Vector<String> getDirectoryContents(String path, boolean includeDirectories, Vector<String> listSoFar) {
-        if (listSoFar == null) {
+    static private Vector<String> getDirectoryContents(String path, boolean includeDirectories, Vector<String> listSoFar)
+    {
+        if (listSoFar == null)
+        {
             listSoFar = new Vector<String>();
         }
         File root = new File(path);
         File[] list = root.listFiles();
 
-        if (list == null) {
+        if (list == null)
+        {
             return listSoFar;
         }
 
-        for (File f : list) {
-            if (f.isDirectory()) {
-                if (includeDirectories) {
+        for (File f : list)
+        {
+            if (f.isDirectory())
+            {
+                if (includeDirectories)
+                {
                     listSoFar.add(f.getAbsolutePath());
                 }
                 getDirectoryContents(f.getAbsolutePath(), includeDirectories, listSoFar);
 
-            } else {
+            }
+            else
+            {
                 listSoFar.add(f.getAbsolutePath());
 
             }
@@ -257,33 +368,46 @@ public class OsHelper {
      * @param folder the folder to get the files
      * @return A vector with all files
      */
-    public static Vector<String> getFoldersFilesRecursiveOld(File folder) {
+    public static Vector<String> getFoldersFilesRecursiveOld(File folder)
+    {
         Vector<String> filenames = new Vector<String>();
         filenames = getFoldersFileRecursive(folder, filenames);
         return filenames;
     }
 
-    static private Vector<String> getFoldersFileRecursive(File folder, Vector<String> filenames) {
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
+    static private Vector<String> getFoldersFileRecursive(File folder, Vector<String> filenames)
+    {
+        for (final File fileEntry : folder.listFiles())
+        {
+            if (fileEntry.isDirectory())
+            {
                 filenames = getFoldersFileRecursive(fileEntry, filenames);
-            } else {
+            }
+            else
+            {
                 filenames.add((folder + "/" + fileEntry.getName()).replace("\\", "/"));
             }
         }
         return filenames;
     }
 
-    public static void killProcessByPid(long pid) {
+    public static void killProcessByPid(long pid)
+    {
         String cmd = null;
-        if (OsHelper.isWindows()) {
+        if (OsHelper.isWindows())
+        {
             cmd = "taskkill /F /PID " + pid;
-        } else {
+        }
+        else
+        {
             cmd = "kill " + pid + " && sleep 5 && kill -9 " + pid;
         }
-        try {
+        try
+        {
             Runtime.getRuntime().exec(cmd);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
@@ -297,33 +421,43 @@ public class OsHelper {
      * @return Windows: conhost.exe                   5652 Console                    1      5.500 K
      * Linux:
      */
-    public static String getPidInformationLine(int pid) {
+    public static String getPidInformationLine(int pid)
+    {
         String command = getPidInfoCommand(pid);
-        try {
+        try
+        {
             OsCommandOutput osCommandOutput = OsHelper.runCommandAndGetOutput(command);
             return osCommandOutput.getStandardOutput().replace("PID TTY", "").replace("TIME CMD", "").trim();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
         return "";
     }
 
-    public static boolean isPidRunning(long pid) throws Exception {
+    public static boolean isPidRunning(long pid) throws Exception
+    {
         return isPidRunning(pid, 5, TimeUnit.SECONDS);
     }
 
-    private static String getPidInfoCommand(long pid) {
-        if (OS.isFamilyWindows()) {
+    private static String getPidInfoCommand(long pid)
+    {
+        if (OS.isFamilyWindows())
+        {
             //tasklist exit code is always 0. Parse output
             //findstr exit code 0 if found pid, 1 if it doesn't
             return "cmd /c \"tasklist /FI \"PID eq " + pid + "\" | findstr " + pid + "\"";
-        } else {
+        }
+        else
+        {
             //ps exit code 0 if process exists, 1 if it doesn't
             return "ps -p " + pid;
         }
     }
 
-    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException {
+    public static boolean isPidRunning(long pid, int timeout, TimeUnit timeunit) throws java.io.IOException
+    {
         String line = getPidInfoCommand(pid);
 
         CommandLine cmdLine = CommandLine.parse(line);
