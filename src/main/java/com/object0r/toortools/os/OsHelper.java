@@ -178,7 +178,7 @@ public class OsHelper
 
     public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception
     {
-        return runCommandAndGetOutput(command, false);
+        return runCommandAndGetOutput(command, true);
     }
 
     public static OsCommandOutput runCommandAndGetOutput(String command, boolean useBash) throws Exception
