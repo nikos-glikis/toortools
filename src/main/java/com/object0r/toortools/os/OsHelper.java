@@ -78,7 +78,7 @@ public class OsHelper
 
     public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath) throws Exception
     {
-        return runRemoteCommand(ip, 22, command, user, directory, privateKeyPath, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
+        return runRemoteCommand(ip, port, command, user, directory, privateKeyPath, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
 
     public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int timeoutSeconds) throws Exception
