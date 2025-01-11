@@ -1,7 +1,6 @@
 package com.object0r.toortools;
 
 import com.object0r.toortools.datatypes.exceptions.ReadUrlException;
-import com.object0r.toortools.providers.ip.AbstractIpProvider;
 import com.object0r.toortools.providers.ip.IpProvider;
 import com.object0r.toortools.providers.ip.IpProvidersHelper;
 import org.apache.commons.io.FileUtils;
@@ -185,39 +184,49 @@ public class Utilities
         FileUtils.writeByteArrayToFile(new File(filename), content);
     }
 
-    static public void trustEverybody()
+    public static void trustEverybody()
     {
-
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager()
-        {
-            public X509Certificate[] getAcceptedIssuers()
-            {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType)
-            {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType)
-            {
-            }
-        }
-        };
-
-        // Install the all-trusting trust manager
         try
         {
+            // Create a TrustManager that trusts all certificates
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager()
+                    {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType)
+                        {
+                            // Do nothing
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType)
+                        {
+                            // Do nothing
+                        }
+
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers()
+                        {
+                            return new X509Certificate[0];
+                        }
+                    }
+            };
+
+            // Initialize an SSL context with the trust-all TrustManager
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new SecureRandom());
+
+            // Set the default SSLSocketFactory to use this context
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Set a HostnameVerifier that accepts any hostname
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+
         }
         catch (Exception e)
         {
-            ;
+            e.printStackTrace();
         }
-        SSLUtilities.trustAllHostnames();
-        SSLUtilities.trustAllHttpsCertificates();
     }
 
     public static String readFile(String path) throws IOException
