@@ -27,41 +27,10 @@ public class DB
     {
         try
         {
-            Statement st = dBconnection.createStatement();
-            try
-            {
-                st.execute("INSERT OR IGNORE  INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
-            }
-            catch (Exception e)
-            {
-                //e.printStackTrace();
-                //System.exit(0);
-                st.close();
-                st = dBconnection.createStatement();
-            }
-
-
-            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'");
-            st.close();
-            st = dBconnection2.createStatement();
-
-            try
-            {
-
-                st.execute("INSERT OR IGNORE  INTO `values` VALUES ('" + key.toString().replace("'", "''") + "', '" + value.toString().replace("'", "''") + "')");
-
-            }
-            catch (Exception e)
-            {
-                //e.printStackTrace();
-                //System.exit(0);
-                ;
-                st.close();
-                st = dBconnection.createStatement();
-            }
-
-            st.execute("UPDATE `values` SET `value` = '" + value.toString().replace("'", "''") + "' WHERE  `key` = '" + key.toString().replace("'", "''") + "'");
-            st.close();
+            String safeKey = key.toString();
+            String safeValue = value.toString();
+            upsertValue(dBconnection, safeKey, safeValue);
+            upsertValue(dBconnection2, safeKey, safeValue);
 
         }
         catch (Exception e)
@@ -210,11 +179,12 @@ public class DB
     public synchronized String get(String key)
     {
         String value = null;
-        Statement st = null;
+        PreparedStatement st = null;
         try
         {
-            st = dBconnection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT `value` FROM `values` WHERE `key` = '" + key.replace("'", "''") + "'");
+            st = dBconnection.prepareStatement("SELECT `value` FROM `values` WHERE `key` = ?");
+            st.setString(1, key);
+            ResultSet rs = st.executeQuery();
 
             if (rs.next())
             {
@@ -381,10 +351,52 @@ public class DB
             dBconnection2 = DriverManager.getConnection("jdbc:sqlite:sessions/" + SESSION_NAME + "/databases_bak/" + dbName + "/" + dbName + ".db");
             dBconnection.setAutoCommit(true);
             dBconnection2.setAutoCommit(true);
+            applyConnectionPragmas(dBconnection);
+            applyConnectionPragmas(dBconnection2);
         }
         catch (SQLException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private void applyConnectionPragmas(Connection connection) throws SQLException
+    {
+        Statement statement = null;
+        try
+        {
+            statement = connection.createStatement();
+            statement.execute("PRAGMA journal_mode=WAL");
+            statement.execute("PRAGMA synchronous=NORMAL");
+            statement.execute("PRAGMA busy_timeout=5000");
+            statement.execute("PRAGMA temp_store=MEMORY");
+            statement.execute("PRAGMA cache_size=-20000");
+        }
+        finally
+        {
+            if (statement != null)
+            {
+                statement.close();
+            }
+        }
+    }
+
+    private void upsertValue(Connection connection, String key, String value) throws SQLException
+    {
+        PreparedStatement statement = null;
+        try
+        {
+            statement = connection.prepareStatement("INSERT OR REPLACE INTO `values`(`key`, `value`) VALUES (?, ?)");
+            statement.setString(1, key);
+            statement.setString(2, value);
+            statement.executeUpdate();
+        }
+        finally
+        {
+            if (statement != null)
+            {
+                statement.close();
+            }
         }
     }
 }
