@@ -11,6 +11,7 @@ import java.sql.Time;
 import java.util.Calendar;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by User on 25/4/2015.
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class OsHelper
 {
     private static final int DEFAULT_CONNECT_TIMEOUT_SECONDS = 15;
+    private static final int DEFAULT_COMMAND_TIMEOUT_SECONDS = 5 * 60;
     static int OS_TYPES_UNKNOWN = 0;
     static int OS_TYPES_WINDOWS = 1;
     static int OS_TYPES_LINUX = 2;
@@ -81,8 +83,22 @@ public class OsHelper
         return runRemoteCommand(ip, port, command, user, directory, privateKeyPath, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
     }
 
-    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int timeoutSeconds) throws Exception
+    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int connectTimeoutSeconds) throws Exception
     {
+        return runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds, OsHelper.DEFAULT_COMMAND_TIMEOUT_SECONDS);
+    }
+
+    public static OsCommandOutput runRemoteCommand(String ip, int port, String command, String user, String directory, String privateKeyPath, int connectTimeoutSeconds, int commandTimeoutSeconds) throws Exception
+    {
+        if (connectTimeoutSeconds <= 0)
+        {
+            throw new IllegalArgumentException("SSH connect timeout must be greater than zero seconds");
+        }
+        if (commandTimeoutSeconds <= 0)
+        {
+            throw new IllegalArgumentException("SSH command timeout must be greater than zero seconds");
+        }
+
         OsCommandOutput osCommandOutput = new OsCommandOutput();
         String remoteCommand = "";
 
@@ -94,86 +110,114 @@ public class OsHelper
 
         JSch jsch = new JSch();
         Session session = jsch.getSession(user, ip, port);
+        Channel channel = null;
 
-        java.util.Properties config = new java.util.Properties();
-        config.put("StrictHostKeyChecking", "no");
-        session.setConfig(config);
-
-        jsch.addIdentity(privateKeyPath);
-        session.connect();
-        Channel channel = session.openChannel("exec");
-        ((ChannelExec) channel).setCommand(remoteCommand);
-
-        channel.setInputStream(null);
-
-        // Create a ByteArrayOutputStream to capture the error output
-        ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();
-        ((ChannelExec) channel).setErrStream(errorOutput);
-
-        InputStream in = channel.getInputStream();
-
-        channel.connect(timeoutSeconds * 1000);
-
-        byte[] tmp = new byte[1024];
-        StringBuffer outputSb = new StringBuffer();
-
-        while (true)
+        try
         {
-            while (in.available() > 0)
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            session.setConfig(config);
+
+            jsch.addIdentity(privateKeyPath);
+            session.connect(connectTimeoutSeconds * 1000);
+            channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(remoteCommand);
+
+            channel.setInputStream(null);
+
+            // Create a ByteArrayOutputStream to capture the error output
+            ByteArrayOutputStream errorOutput = new ByteArrayOutputStream();
+            ((ChannelExec) channel).setErrStream(errorOutput);
+
+            InputStream in = channel.getInputStream();
+
+            channel.connect(connectTimeoutSeconds * 1000);
+
+            byte[] tmp = new byte[1024];
+            StringBuffer outputSb = new StringBuffer();
+            long commandDeadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(commandTimeoutSeconds);
+
+            while (true)
             {
-                int i = in.read(tmp, 0, 1024);
-                if (i < 0)
+                while (in.available() > 0)
                 {
+                    if (System.nanoTime() >= commandDeadlineNanos)
+                    {
+                        throw new TimeoutException("SSH command timed out after " + commandTimeoutSeconds + " seconds on " + ip);
+                    }
+                    int i = in.read(tmp, 0, 1024);
+                    if (i < 0)
+                    {
+                        break;
+                    }
+                    outputSb.append(new String(tmp, 0, i));
+                }
+                if (channel.isClosed())
+                {
+                    if (in.available() > 0)
+                    {
+                        continue;
+                    }
+                    int exitStatus = channel.getExitStatus();
+                    osCommandOutput.setExitCode(exitStatus);
+                    if (exitStatus == 0)
+                    {
+                        osCommandOutput.setStandardOutput(outputSb.toString());
+                    } /*else {
+                        osCommandOutput.setErrorOutput(outputSb.toString());
+                    }*/
+                    // When the channel is closed, convert the ByteArrayOutputStream to a string and set it as the error output
+                    osCommandOutput.setErrorOutput(errorOutput.toString());
                     break;
                 }
-                outputSb.append(new String(tmp, 0, i));
-            }
-            if (channel.isClosed())
-            {
-                if (in.available() > 0)
+                if (System.nanoTime() >= commandDeadlineNanos)
                 {
-                    continue;
+                    throw new TimeoutException("SSH command timed out after " + commandTimeoutSeconds + " seconds on " + ip);
                 }
-                int exitStatus = channel.getExitStatus();
-                osCommandOutput.setExitCode(exitStatus);
-                if (exitStatus == 0)
-                {
-                    osCommandOutput.setStandardOutput(outputSb.toString());
-                } /*else {
-                    osCommandOutput.setErrorOutput(outputSb.toString());
-                }*/
-                // When the channel is closed, convert the ByteArrayOutputStream to a string and set it as the error output
-                osCommandOutput.setErrorOutput(errorOutput.toString());
-                break;
+                Thread.sleep(10);
             }
+            return osCommandOutput;
         }
-        channel.disconnect();
-        session.disconnect();
-
-        return osCommandOutput;
+        finally
+        {
+            if (channel != null)
+            {
+                channel.disconnect();
+            }
+            session.disconnect();
+        }
     }
 
     public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest) throws Exception
     {
-        return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS);
+        return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, OsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS, OsHelper.DEFAULT_COMMAND_TIMEOUT_SECONDS);
     }
 
     public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest, int connectTimeoutSeconds) throws Exception
+    {
+        return runRemoteCommandRetries(ip, port, command, user, directory, privateKeyPath, retries, sleepMsPerRequest, connectTimeoutSeconds, OsHelper.DEFAULT_COMMAND_TIMEOUT_SECONDS);
+    }
+
+    public static OsCommandOutput runRemoteCommandRetries(String ip, int port, String command, String user, String directory, String privateKeyPath, int retries, int sleepMsPerRequest, int connectTimeoutSeconds, int commandTimeoutSeconds) throws Exception
     {
 
         for (int i = 0; i < retries; i++)
         {
             try
             {
-                return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath);
+                return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds, commandTimeoutSeconds);
             }
             catch (Exception e)
             {
+                if (e instanceof TimeoutException)
+                {
+                    throw e;
+                }
                 e.printStackTrace();
                 Thread.sleep(sleepMsPerRequest);
             }
         }
-        return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds);
+        return OsHelper.runRemoteCommand(ip, port, command, user, directory, privateKeyPath, connectTimeoutSeconds, commandTimeoutSeconds);
     }
 
     public static OsCommandOutput runCommandAndGetOutput(String command) throws Exception
